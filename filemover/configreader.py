@@ -1,4 +1,4 @@
-from mover import logger
+from logger import logger
 
 
 def read():

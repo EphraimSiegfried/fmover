@@ -24,7 +24,7 @@ class Mover:
 
     def __init__(self, properties):
         self.properties = properties
-        self.config = filehandler.read()
+        self.config = configreader.read()
         self.command = self.config[-1].get("CMD")
 
     def corresponds(self, token):
