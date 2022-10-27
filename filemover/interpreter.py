@@ -2,8 +2,8 @@ import sys
 import traceback
 import os
 
+from filemover.config_reader import MoveConfig
 from logger import logger
-import configreader
 
 
 def get_type(mapping: str):
@@ -24,8 +24,8 @@ class Mover:
 
     def __init__(self, properties):
         self.properties = properties
-        self.config = configreader.read()
-        self.command = self.config[-1].get("CMD")
+        self.config = MoveConfig()
+        self.command = self.config.get_command()
 
     def corresponds(self, token):
         key = get_key(token)
