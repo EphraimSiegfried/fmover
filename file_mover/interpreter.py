@@ -36,7 +36,7 @@ class Interpreter:
         assert file_property is not None
 
         if key == "*":  # * is a special character which indicates all pattern:path pairs of a parameter
-            for pattern in config_dic:
+            for pattern in config_dic:  # TODO: Enable usage of glob
                 if pattern in file_property:
                     return True  # There has been a match with any pattern of config_dic
         elif key in file_property:
