@@ -46,3 +46,7 @@ class InterpreterTest(unittest.TestCase):
 
         self.interpreter.commands = [{'WHERE_FROM(uni) & NAME(China):': 'WHERE_FROM(wiki)'}]
         self.assertIs(None, self.interpreter.parse_command())
+
+
+if __name__ == '__main__':
+    unittest.main()
