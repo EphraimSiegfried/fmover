@@ -1,10 +1,16 @@
 import sys
 import os
+import logging
 from notifypy import Notify
-
-from config_reader import MoveConfig
-from file_property_reader import FileMetadata
+from config import MoveConfig
+from file_property import FileMetadata
 from interpreter import Interpreter
+
+# logging
+logger = logging
+date_strftime_format = "%d-%b-%y %H:%M:%S"
+logging.basicConfig(filename='./moved_files.log', datefmt=date_strftime_format, level=logging.INFO,
+                    format='%(asctime)s: %(message)s')
 
 
 def get_new_file_location(file, move_config_path) -> str:
@@ -13,7 +19,12 @@ def get_new_file_location(file, move_config_path) -> str:
     interpreter = Interpreter(file_properties=file_data.get_file_properties(),
                               move_config=configuration.get_properties(),
                               commands=configuration.get_commands())
-    return interpreter.parse_command()
+    location = interpreter.parse_command()
+    if location is None:
+        logger.info(f"{file} did not move")
+        location = file
+    logger.info(f"{file_data.get_file_name_with_extension()} moved to {location}")
+    return location
 
 
 def notify(file_name, new_location) -> None:
@@ -32,7 +43,7 @@ def main():
 
     # Move file
     new_file_location = get_new_file_location(file_location, move_config_path)
-    os.rename(file_location, new_file_location + file_name)
+    # os.rename(file_location, new_file_location + file_name)
 
     # Notify user
     notify(file_name, new_file_location)

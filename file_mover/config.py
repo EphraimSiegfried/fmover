@@ -16,4 +16,9 @@ class MoveConfig:
     def get_properties(self) -> dict:
         return {key: value for key, value in self.dic_config.items() if key != "COMMAND"}
 
-
+    def __assert_parameters_are_correct(self):
+        config_keys = self.dic_config.keys()
+        return "WHERE_FROM" in config_keys and \
+               "NAME" in config_keys and \
+               "COMMAND" in config_keys and \
+               "FILE_EXTENSION" in config_keys

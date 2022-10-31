@@ -1,3 +1,6 @@
+import logging
+
+
 class Interpreter:
 
     def __init__(self, file_properties: dict, move_config: dict, commands: list):
@@ -10,6 +13,7 @@ class Interpreter:
         for command in self.commands:
             antecedent, consequent = command.popitem()
             if self.antecedent_corresponds(antecedent):
+                logging.info(f"Executed command: {antecedent} -> {consequent}")
                 return self.get_corresponding_path(consequent)
 
     # This method returns true if all tokens in an antecedent are true (which are connected by conjunction)
