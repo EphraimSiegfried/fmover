@@ -17,7 +17,8 @@ class FileMetadata:
         return os.path.splitext(self.file.split("/")[-1])[0] if "/" in self.file else os.path.splitext(self.file)
 
     def get_where_from(self) -> str:
-        return ''.join(OSXMetaData(self.file).get("kMDItemWhereFroms"))
+        where_from = OSXMetaData(self.file).get("kMDItemWhereFroms")
+        return ''.join(where_from) if where_from is not None else ''
 
     def get_file_properties(self) -> dict:
         return {"WHERE_FROM": self.get_where_from(),
