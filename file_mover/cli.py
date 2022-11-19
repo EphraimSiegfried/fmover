@@ -2,7 +2,7 @@ import argparse
 import os
 
 
-def enable_argument_parser():
+def enable_argument_parser() -> argparse.ArgumentParser:
     argument_parser = argparse.ArgumentParser(
         prog="mover",
         description="Move files based on given rules and file properties"
@@ -51,17 +51,17 @@ def enable_argument_parser():
         "-m", "--move",
         nargs=2,
         dest="moveOneFile",
-        metavar="pathToFile",
+        metavar=("pathToFile", "configName"),
         type=str,
         help="Move given file based on given configuration")
 
     argument_parser.add_argument(
         "-a", "--all",
-        metavar="pathToFolderAndConfig",
+        metavar=("pathToFolder", "configName"),
         nargs=2,
         dest="moveAllFilesInFolder",
         type=str,
-        help="Move all files in the current folder based on given configuration")
+        help="Move all files in the given folder based on given configuration")
 
     return argument_parser
 

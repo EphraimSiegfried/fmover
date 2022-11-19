@@ -30,6 +30,9 @@ class Mover:
     def move_file(self, file_path: str, should_notify: bool):
         file_data = FileMetadata(file_path)
         new_file_path = self._get_new_file_location(file_data)
+        if not os.path.isabs(new_file_path):
+            new_file_path = os.path.join(os.path.dirname(file_path), new_file_path)
+
         f_name = file_data.get_file_name_with_extension()
         if not os.path.exists(new_file_path):
             shutil.move(file_path, new_file_path)
