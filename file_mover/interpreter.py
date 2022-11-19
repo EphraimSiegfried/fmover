@@ -11,7 +11,7 @@ class Interpreter:
     # This method returns the path of the first command whose antecedent is true
     def parse_command(self) -> str:
         for command in self.commands:
-            antecedent, consequent = command.popitem()
+            (antecedent, consequent), = command.items()
             if self.antecedent_corresponds(antecedent):
                 logging.info(f"Executed command: {antecedent} -> {consequent}")
                 return self.get_corresponding_path(consequent)
