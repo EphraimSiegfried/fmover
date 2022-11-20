@@ -1,5 +1,5 @@
 import unittest
-from file_mover import interpreter
+from src import interpreter
 
 
 class InterpreterTest(unittest.TestCase):
@@ -9,7 +9,7 @@ class InterpreterTest(unittest.TestCase):
                        'NAME': {'China': 'Users/Peter'},
                        'FILE_EXTENSION': {'.zip': 'Users/Peter/Home'}}
         file_props = {'WHERE_FROM': 'wikipedia', 'NAME': 'China', 'FILE_EXTENSION': '.html'}
-        self.interpreter = interpreter.Interpreter(file_props, move_config, {})
+        self.interpreter = interpreter.Interpreter(file_props, move_config, [])
 
     def test_token_corresponds_with_WHERE_FROM_parameter_is_true_when_match(self):
         self.assertTrue(self.interpreter.token_corresponds("WHERE_FROM(wikipedia)"))

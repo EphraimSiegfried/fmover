@@ -1,8 +1,9 @@
-import file_mover.cli as cli
-import file_mover.configs as configs
-from file_mover.mover import Mover
+import src.cli as cli
+import src.configs as configs
+from src.mover import Mover
 
-if __name__ == '__main__':
+
+def main():
     args = cli.enable_argument_parser().parse_args()
     if args.listConfigs:
         configs.print_list_configurations()
@@ -24,3 +25,7 @@ if __name__ == '__main__':
     elif args.moveAllFilesInFolder:
         dir_path, config = tuple(args.moveAllFilesInFolder)
         Mover(configs.get_config_path(config)).move_files_in_dir(dir_path, True)
+
+
+if __name__ == '__main__':
+    main()

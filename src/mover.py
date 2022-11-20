@@ -1,9 +1,9 @@
 import shutil
 import os
 from notifypy import Notify
-from file_mover.config import MoveConfig
-from file_mover.file_property import FileMetadata
-from file_mover.interpreter import Interpreter
+from src.config import MoveConfig
+from src.file_property import FileMetadata
+from src.interpreter import Interpreter
 
 
 class Mover:
