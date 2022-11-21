@@ -1,0 +1,4 @@
+notifypy~=1.0.3.0
+appdirs~=1.4.4
+osxmetadata~=1.2.2
+setuptools~=63.2.0
