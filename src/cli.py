@@ -1,5 +1,6 @@
 import argparse
 import os
+import src.configs
 
 
 def enable_argument_parser() -> argparse.ArgumentParser:
@@ -15,18 +16,17 @@ def enable_argument_parser() -> argparse.ArgumentParser:
         help="List all configurations"
     )
 
-    configs = os.listdir(os.path.join(os.path.dirname(os.path.dirname(__file__)), "configurations"))
-    configs = [c.replace('.json', '') for c in configs]
+    configurations = [c.replace('.json', '') for c in src.configs.get_list_of_configurations()]
     argument_parser.add_argument(
         "-o", "--open",
-        choices=configs,
+        choices=configurations,
         type=str,
         dest="openConfig",
         help="Open configuration file")
 
     argument_parser.add_argument(
         "-p", "--print",
-        choices=configs,
+        choices=configurations,
         type=str,
         dest="printConfig",
         help="Print configuration")
@@ -41,7 +41,7 @@ def enable_argument_parser() -> argparse.ArgumentParser:
     argument_parser.add_argument(
         "-d", "--delete",
         type=str,
-        choices=configs,
+        choices=configurations,
         metavar="configName",
         dest="deleteConfig",
         help="Delete a configuration"

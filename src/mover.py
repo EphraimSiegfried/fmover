@@ -34,11 +34,15 @@ class Mover:
             new_file_path = os.path.join(os.path.dirname(file_path), new_file_path)
 
         f_name = file_data.get_file_name_with_extension()
+        dir_of_new_file = os.path.dirname(new_file_path)
+        if not os.path.exists(dir_of_new_file):
+            print(f"The folder doesn't exist: {dir_of_new_file}")
+            return  # TODO: BETTER SOLUTION
         if not os.path.exists(new_file_path):
             shutil.move(file_path, new_file_path)
-            print(f"{'File successfully moved:':<25}",os.path.relpath(new_file_path, file_path))
+            print(f"{'File successfully moved:':<25}", os.path.relpath(new_file_path, file_path))
         elif file_path == new_file_path:
-            print(f"{'No match with command:': <25}",f_name)
+            print(f"{'No match with command:': <25}", f_name)
         else:
             print(f"{'File with same name already exists in destination folder:': .<25}", f_name)
         if should_notify and file_path != new_file_path:
