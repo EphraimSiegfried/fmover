@@ -1,6 +1,7 @@
-import src.cli as cli
-import src.configs as configs
-from src.mover import Mover
+import cli
+import logging
+import configs as configs
+from mover import Mover
 
 
 def main():
@@ -21,10 +22,10 @@ def main():
             configs.delete_configuration(args.deleteConfig)
     elif args.moveOneFile:
         file_path, config = tuple(args.moveOneFile)
-        Mover(configs.get_config_path(config)).move_file(file_path, True)
+        Mover(configs.get_config_path(config)).move_file(file_path, not args.silent)
     elif args.moveAllFilesInFolder:
         dir_path, config = tuple(args.moveAllFilesInFolder)
-        Mover(configs.get_config_path(config)).move_files_in_dir(dir_path, True)
+        Mover(configs.get_config_path(config)).move_files_in_dir(dir_path, not args.silent)
 
 
 if __name__ == '__main__':

@@ -4,7 +4,6 @@ A file manager that moves files based on file properties and specified criteria.
 
 ## Description
 
-An in-depth paragraph about your project and overview of use.
 
 ## Getting Started
 
