@@ -1,11 +1,46 @@
 # file-mover
 
-A file manager that moves files based on file properties and specified criteria.
+An open source file manager CLI that enables moving files based on file properties and specified criteria.
 
 ## Description
+Tired of moving files manually? Given a file path and a configuration, file-mover will move files based on the specified criteria.
+
+The program can currently move files based on the properties: file source, file extension and file name. 
+These properties are specified in the configuration which is a json file.
+
+An example configuration looks like this:
+```json
+  {
+  "COMMAND": [
+    {"NAME(Analysis) & WHERE_FROM(www.uni.com)": "WHERE_FROM(www.uni.com)"}, 
+    {"WHERE_FROM(*)": "WHERE_FROM(*)"}
+  ],
+  "WHERE_FROM": {
+    "www.uni.com": "/Users/user/Documents/Uni",
+    "www.uni2.com": "/Users/user/Documents/Uni2"
+  },
+  "NAME": {
+    "Analysis": "/Users/user/Documents/Uni/Analysis"
+  },
+  "FILE_EXTENSION": {
+    ".pdf": "/Users/user/Documents/PDF",
+    ".docx": "/Users/user/Documents/DOCX",
+    ".pptx": "/Users/user/Documents/PPTX"
+  }
+}
+
+```
+If a file was downloaded from www.uni.com and the file name contains the word "Analysis", the file will be moved to the folder "/Users/user/Documents/Uni".
+
+If a file extension is ".pdf", the file will be moved to the folder "/Users/user/Documents/PDF".
+
+Further information on the configuration is given in the chapter "Configuration".
 
 
 ## Getting Started
+
+
+
 
 ### Dependencies
 
