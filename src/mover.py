@@ -1,15 +1,16 @@
 import shutil
 import os
 from notifypy import Notify
-from src.config import MoveConfig
-from src.file_property import FileMetadata
-from src.interpreter import Interpreter
+from config import MoveConfig
+from file_property import FileMetadata
+from interpreter import Interpreter
 
 
 class Mover:
 
     def __init__(self, move_config_path):
         self.configuration = MoveConfig(move_config_path)
+        self.configuration.validate_config()
 
     def _get_new_file_location(self, file_data: FileMetadata) -> str:
         interpreter = Interpreter(file_properties=file_data.get_file_properties(),
@@ -27,7 +28,12 @@ class Mover:
         notification.message = new_location
         notification.send()
 
-    def move_file(self, file_path: str, should_notify: bool):
+    def move_file(self, file_path: str, should_notify: bool) -> None:
+        """
+        Moves a file to a new location based on the configuration file
+        :param file_path: The path of the file (can be a relative path)
+        :param should_notify: If True, a notification will be shown
+        """
         file_data = FileMetadata(file_path)
         new_file_path = self._get_new_file_location(file_data)
         if not os.path.isabs(new_file_path):
@@ -36,19 +42,25 @@ class Mover:
         f_name = file_data.get_file_name_with_extension()
         dir_of_new_file = os.path.dirname(new_file_path)
         if not os.path.exists(dir_of_new_file):
-            print(f"The folder doesn't exist: {dir_of_new_file}")
-            return  # TODO: BETTER SOLUTION
+            raise FileNotFoundError(f"The directory {dir_of_new_file} does not exist.")
         if not os.path.exists(new_file_path):
             shutil.move(file_path, new_file_path)
+            if should_notify:
+                self._notify(file_data.get_file_name_with_extension(), new_file_path)
             print(f"{'File successfully moved:':<25}", os.path.relpath(new_file_path, file_path))
         elif file_path == new_file_path:
-            print(f"{'No match with command:': <25}", f_name)
+            print(f"{'No match with command:':<25}", f_name)
         else:
             print(f"{'File with same name already exists in destination folder:': .<25}", f_name)
-        if should_notify and file_path != new_file_path:
-            self._notify(file_data.get_file_name_with_extension(), new_file_path)
 
-    def move_files_in_dir(self, path_to_directory: str, should_notify: bool):
+    def move_files_in_dir(self, path_to_directory: str, should_notify: bool) -> None:
+        """
+        Moves all files in a directory to a new location based on the configuration file
+        :param path_to_directory: The path of the directory
+        :param should_notify: If True, a notification will be shown
+        """
+        if not os.path.isdir(path_to_directory):
+            raise FileNotFoundError(f"The directory {path_to_directory} does not exist.")
         file_paths = [os.path.join(path_to_directory, file) for file in os.listdir(path_to_directory)]
         for file_path in file_paths:
             if not os.path.isdir(file_path):
