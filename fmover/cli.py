@@ -1,6 +1,6 @@
 import argparse
 import os
-import configs
+import fmover.configs as configs
 
 
 def enable_argument_parser() -> argparse.ArgumentParser:

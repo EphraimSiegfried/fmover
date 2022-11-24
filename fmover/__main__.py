@@ -1,7 +1,6 @@
-import cli
-import logging
-import configs as configs
-from mover import Mover
+import fmover.cli as cli
+import fmover.configs as configs
+from fmover.mover import Mover
 
 
 def main():

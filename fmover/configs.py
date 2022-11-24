@@ -5,7 +5,7 @@ import sys
 
 import appdirs
 
-path_to_data_dir = appdirs.user_data_dir("file-mover")
+path_to_data_dir = appdirs.user_data_dir("fmover")
 CONFIGS_DIR = os.path.join(path_to_data_dir, "configurations")
 default_config = {
     "COMMAND": [

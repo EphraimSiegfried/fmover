@@ -1,9 +1,9 @@
 import shutil
 import os
-from notifypy import Notify
-from config import MoveConfig
-from file_property import FileMetadata
-from interpreter import Interpreter
+import notifypy as notify
+from fmover.config import MoveConfig
+from fmover.file_property import FileMetadata
+from fmover.interpreter import Interpreter
 
 
 class Mover:
@@ -22,7 +22,7 @@ class Mover:
         return os.path.join(location, file_data.get_file_name_with_extension())
 
     def _notify(self, file_name, new_location) -> None:
-        notification = Notify()
+        notification = notify.Notify()
         notification.application_name = "File has been moved"
         notification.title = file_name
         notification.message = new_location
@@ -42,7 +42,7 @@ class Mover:
         f_name = file_data.get_file_name_with_extension()
         dir_of_new_file = os.path.dirname(new_file_path)
         if not os.path.exists(dir_of_new_file):
-            raise FileNotFoundError(f"The directory {dir_of_new_file} does not exist.")
+            raise FileNotFoundError(f"The destination directory {dir_of_new_file} does not exist.")
         if not os.path.exists(new_file_path):
             shutil.move(file_path, new_file_path)
             if should_notify:
@@ -51,7 +51,7 @@ class Mover:
         elif file_path == new_file_path:
             print(f"{'No match with command:':<25}", f_name)
         else:
-            print(f"{'File with same name already exists in destination folder:': .<25}", f_name)
+            print(f"{'File with same name already exists in destination folder:': <25}", f_name)
 
     def move_files_in_dir(self, path_to_directory: str, should_notify: bool) -> None:
         """
@@ -61,7 +61,7 @@ class Mover:
         """
         if not os.path.isdir(path_to_directory):
             raise FileNotFoundError(f"The directory {path_to_directory} does not exist.")
-        file_paths = [os.path.join(path_to_directory, file) for file in os.listdir(path_to_directory)]
+        file_paths = [os.path.join(path_to_directory, file) for file in os.listdir(path_to_directory) if file[0] != "."
+                      and os.path.isfile(os.path.join(path_to_directory, file))]
         for file_path in file_paths:
-            if not os.path.isdir(file_path):
-                self.move_file(file_path, should_notify)
+            self.move_file(file_path, should_notify)
