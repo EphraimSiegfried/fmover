@@ -1,9 +1,11 @@
 import json
 import os
+import subprocess
+import sys
 
 import appdirs
 
-path_to_data_dir = appdirs.user_data_dir("file-mover", "Ephraim Siegfried")
+path_to_data_dir = appdirs.user_data_dir("file-mover")
 CONFIGS_DIR = os.path.join(path_to_data_dir, "configurations")
 default_config = {
     "COMMAND": [
@@ -26,16 +28,24 @@ default_config = {
         ".mov": "./Videos",
         ".MOV": "./Videos",
         ".mp4": "./Videos",
-        ".docx": "./Word",
-        ".odt": "./Word",
-        ".doc": "./Word",
-        ".pages": "./Word",
+        ".MP4": "./Videos",
+        ".m4v": "./Videos",
+        ".M4V": "./Videos",
+        ".avi": "./Videos",
+        ".AVI": "./Videos",
+        ".docx": "./Text",
+        ".odt": "./Text",
+        ".doc": "./Text",
+        ".pages": "./Text",
+        ".txt": "./Text",
+        ".rtf": "./Text",
         ".pptx": "./PowerPoint",
         ".m4a": "./Audio",
         ".wave": "./Audio",
         ".wav": "./Audio"
     }
 }
+
 if not os.path.exists(path_to_data_dir):
     os.mkdir(path_to_data_dir)
     os.mkdir(CONFIGS_DIR)
@@ -57,7 +67,16 @@ def print_list_configurations():
 
 
 def open_configuration(name):
-    os.system(f"open -e \"{get_config_path(name)}\"")  # TODO: Doesn't work for other OS than MACOS
+    file_path = get_config_path(name)
+    if sys.platform == 'win32':
+        subprocess.Popen(['start', file_path], shell=True)
+    elif sys.platform == 'darwin':
+        subprocess.Popen(['open', file_path])
+    else:
+        try:
+            subprocess.Popen(['xdg-open', file_path])
+        except OSError:
+            print("Couldn't open file in a text editor")
 
 
 def print_configuration(name):
@@ -74,3 +93,6 @@ def create_configuration(name):
 
 def delete_configuration(name):
     os.remove(get_config_path(name))
+
+
+

@@ -1,62 +1,102 @@
-import logging
+def get_parameter(token: str) -> str:
+    """
+    :param token: a token of the form "PARAMETER(PATTERN)"
+    :return: the parameter of the token
+    """
+    return token[0:token.find("(")].strip()
+
+
+def get_pattern(token: str) -> str:
+    """
+    :param token: a token of the form "PARAMETER(PATTERN)"
+    :return: the pattern of the token
+    """
+    return token[token.find("(") + 1:token.find(")")].strip()
 
 
 class Interpreter:
+    """
+    This class compares file properties with configuration properties based on commands.
+
+    Example:
+    file_properties = {"WHERE_FROM": "https://www.google.com", "NAME": "hello", "FILE_EXTENSION": ".txt"}
+    move_config = {"WHERE_FROM": {"https://www.google.com": "C:/Users/Downloads/Google", "https://www.youtube.com": "C:/Users/Downloads/Youtube"},
+                    "NAME": {"hello": "C:/Users/Downloads/Hello", "world": "C:/Users/Downloads/World"},
+                    "FILE_EXTENSION": {".txt": "C:/Users/Downloads/Text", ".pdf": "C:/Users/Downloads/PDF"}}
+    commands = [{"WHERE_FROM(https://www.google.com) & NAME(hello)": "NAME(*)"}, {"WHERE_FROM(https://www.youtube.com) & NAME(world)": "NAME(*)"}]
+
+    The Interpreter class will return the path "C:/Users/Downloads/Hello" because the antecedent of the first command is true.
+
+    Attributes:
+        file_properties: A dictionary of file properties
+        config: A dictionary of configuration properties
+        commands: A list of commands
+
+    Methods:
+        parse_command: Returns the path of the first command whose antecedent is true
+        antecedent_corresponds: Returns true if all tokens in an antecedent are true (which are connected by conjunction)
+        token_corresponds: Returns true if the parameter of the given token has a pattern that is contained in the
+                           file property of the parameter
+        get_corresponding_path: Returns the path of the command whose antecedent is true
+    """
+
+    # Dictionary:
+    # Antecedent: The left side of a command
+    # Consequent: The right side of a command
+    # Token: The part of an antecedent which is separated by conjunction
+    # Parameter: The left side of a token e.g. the parameter of NAME(hello) is NAME
+    # Pattern: The content inside the brackets of a token e.g. the pattern of NAME(hello) is hello
+    # Property: A configuration property e.g. Name, File Extension, Where From
+    # *: A wildcard which indicates all pattern:path pairs of a parameter
 
     def __init__(self, file_properties: dict, move_config: dict, commands: list):
         self.file_properties = file_properties
         self.config = move_config
         self.commands = commands
 
-    # This method returns the path of the first command whose antecedent is true
     def parse_command(self) -> str:
+        """
+        :return: The path of the first command whose antecedent is true
+        """
         for command in self.commands:
             (antecedent, consequent), = command.items()
-            if self.antecedent_corresponds(antecedent):
-                logging.info(f"Executed command: {antecedent} -> {consequent}")
-                return self.get_corresponding_path(consequent)
+            if self.__antecedent_corresponds(antecedent):
+                return self.__get_corresponding_path(consequent)
 
-    # This method returns true if all tokens in an antecedent are true (which are connected by conjunction)
-    def antecedent_corresponds(self, antecedent: str) -> bool:
-        corresponds = True
-        tokens = antecedent.split("&")
-        for token in tokens:
-            corresponds = self.token_corresponds(token.strip()) & corresponds
-        return corresponds
+    def __antecedent_corresponds(self, antecedent: str) -> bool:
+        """
+        :param antecedent: The antecedent of a command
+        :return: True if all tokens in an antecedent are true (which are connected by conjunction)
+        """
+        return all(self.__token_corresponds(token.strip()) for token in antecedent.split("&"))
 
     # This method returns true if the parameter of the given token has a pattern that is contained in the
     # file property of the parameter
-    def token_corresponds(self, token: str) -> bool:
-        # Gets the left side of the token e.g. the parameter of NAME(hello) is NAME
-        parameter = token[0:token.find("(")]
-        # Gets the content inside the brackets of a content e.g. the key of NAME(hello) is hello
-        key = token[token.find("(") + 1:token.find(")")]
-
-        # config_dic contains all pattern:path pairs of the token-parameter saved in the config.json
-        config_dic: dict = self.config.get(parameter)
-        # file_property is the value of a parameter which the actual file has
+    def __token_corresponds(self, token: str) -> bool:
+        """
+        :param token: The token of an antecedent
+        :return: True if the parameter of the given token has a pattern that
+        is contained in the file property of the parameter
+        """
+        parameter, pattern = get_parameter(token), get_pattern(token)
+        property_dic: dict = self.config.get(parameter)
         file_property: str = self.file_properties.get(parameter)
-        assert config_dic is not None
-        assert file_property is not None
-
-        if key == "*":  # * is a special character which indicates all pattern:path pairs of a parameter
-            for pattern in config_dic:  # TODO: Enable usage of glob
-                if pattern in file_property:
-                    return True  # There has been a match with any pattern of config_dic
-        elif key in file_property:
-            return True  # The key matches with the property the file has
+        if pattern == "*":
+            return any(property_pattern in file_property for property_pattern in property_dic)
+        elif pattern in file_property:
+            return True
         return False
 
-    def get_corresponding_path(self, token) -> str:
-        parameter = token[0:token.find("(")]
-        key = token[token.find("(") + 1:token.find(")")]
-        config_dic: dict = self.config.get(parameter)
-        file_property: str = self.file_properties.get(parameter)
-        assert config_dic is not None
-        assert file_property is not None
-        if key == "*":
-            for pattern in config_dic:
-                if pattern in file_property:
-                    return config_dic.get(pattern)
+    def __get_corresponding_path(self, token: str) -> str:
+        """
+        :param token: The consequent of a command
+        :return: The path of the command whose antecedent is true
+        """
+        parameter, pattern = get_parameter(token), get_pattern(token)
+        property_dic: dict = self.config.get(parameter)
+        if pattern == "*":
+            for parameter_pattern in property_dic:
+                if parameter_pattern in self.file_properties.get(parameter):
+                    return property_dic.get(parameter_pattern)
         else:
-            return config_dic.get(key)
+            return property_dic.get(pattern)

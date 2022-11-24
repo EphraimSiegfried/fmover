@@ -1,9 +1,10 @@
 import argparse
 import os
-import src.configs
+import configs
 
 
 def enable_argument_parser() -> argparse.ArgumentParser:
+
     argument_parser = argparse.ArgumentParser(
         prog="mover",
         description="Move files based on given rules and file properties"
@@ -16,7 +17,7 @@ def enable_argument_parser() -> argparse.ArgumentParser:
         help="List all configurations"
     )
 
-    configurations = [c.replace('.json', '') for c in src.configs.get_list_of_configurations()]
+    configurations = [c.replace('.json', '') for c in configs.get_list_of_configurations()]
     argument_parser.add_argument(
         "-o", "--open",
         choices=configurations,
@@ -63,12 +64,10 @@ def enable_argument_parser() -> argparse.ArgumentParser:
         type=str,
         help="Move all files in the given folder based on given configuration")
 
+    argument_parser.add_argument(
+        "-s", "--silent",
+        action="store_true",
+        dest="silent",
+        help="Do not notify that the file has been moved")
+
     return argument_parser
-
-
-def existing_file_path(file_path):
-    if not os.path.exists(file_path):
-        raise argparse.ArgumentTypeError(f"The file: \"{file_path}\" does not exist")
-    elif os.path.isdir(file_path):
-        raise argparse.ArgumentTypeError(f"The file \"{file_path}\" is a directory and not a file")
-    return file_path
