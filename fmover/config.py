@@ -25,7 +25,7 @@ class MoveConfig:
         elif isinstance(config, dict):
             self.config = config
         else:
-            raise ValueError(f"The config must be a string or a dictionary")
+            raise ValueError(f"The config must be a path (string) or a dictionary")
 
     def get_commands(self) -> list:
         """

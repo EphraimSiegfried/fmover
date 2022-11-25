@@ -4,6 +4,8 @@ import notifypy as notify
 from fmover.config import MoveConfig
 from fmover.file_property import FileMetadata
 from fmover.interpreter import Interpreter
+import logging
+logger = logging.getLogger(__name__)
 
 
 class Mover:
@@ -38,20 +40,19 @@ class Mover:
         new_file_path = self._get_new_file_location(file_data)
         if not os.path.isabs(new_file_path):
             new_file_path = os.path.join(os.path.dirname(file_path), new_file_path)
-
         f_name = file_data.get_file_name_with_extension()
         dir_of_new_file = os.path.dirname(new_file_path)
         if not os.path.exists(dir_of_new_file):
             raise FileNotFoundError(f"The destination directory {dir_of_new_file} does not exist.")
-        if not os.path.exists(new_file_path):
-            shutil.move(file_path, new_file_path)
-            if should_notify:
-                self._notify(file_data.get_file_name_with_extension(), new_file_path)
-            print(f"{'File successfully moved:':<25}", os.path.relpath(new_file_path, file_path))
-        elif file_path == new_file_path:
-            print(f"{'No match with command:':<25}", f_name)
-        else:
-            print(f"{'File with same name already exists in destination folder:': <25}", f_name)
+        if os.path.exists(new_file_path):
+            raise FileExistsError(f"The file {f_name} already exists in {dir_of_new_file}.")
+        if file_path == new_file_path:
+            raise FileExistsError(f"The file {f_name} is already in the correct location.")
+        shutil.move(file_path, new_file_path)
+        if should_notify:
+            self._notify(file_data.get_file_name_with_extension(), new_file_path)
+        logger.info(f"File successfully moved: {os.path.relpath(new_file_path,file_path)}")
+
 
     def move_files_in_dir(self, path_to_directory: str, should_notify: bool) -> None:
         """

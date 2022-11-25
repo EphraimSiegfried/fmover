@@ -1,4 +1,8 @@
-def get_parameter(token: str) -> str:
+import logging
+logger = logging.getLogger(__name__)
+
+
+def _get_parameter(token: str) -> str:
     """
     :param token: a token of the form "PARAMETER(PATTERN)"
     :return: the parameter of the token
@@ -6,7 +10,7 @@ def get_parameter(token: str) -> str:
     return token[0:token.find("(")].strip()
 
 
-def get_pattern(token: str) -> str:
+def _get_pattern(token: str) -> str:
     """
     :param token: a token of the form "PARAMETER(PATTERN)"
     :return: the pattern of the token
@@ -61,6 +65,7 @@ class Interpreter:
         for command in self.commands:
             (antecedent, consequent), = command.items()
             if self.__antecedent_corresponds(antecedent):
+                logger.info(f"Executed command: {command}")
                 return self.__get_corresponding_path(consequent)
 
     def __antecedent_corresponds(self, antecedent: str) -> bool:
@@ -78,7 +83,7 @@ class Interpreter:
         :return: True if the parameter of the given token has a pattern that
         is contained in the file property of the parameter
         """
-        parameter, pattern = get_parameter(token), get_pattern(token)
+        parameter, pattern = _get_parameter(token), _get_pattern(token)
         property_dic: dict = self.config.get(parameter)
         file_property: str = self.file_properties.get(parameter)
         if pattern == "*":
@@ -92,7 +97,7 @@ class Interpreter:
         :param token: The consequent of a command
         :return: The path of the command whose antecedent is true
         """
-        parameter, pattern = get_parameter(token), get_pattern(token)
+        parameter, pattern = _get_parameter(token), _get_pattern(token)
         property_dic: dict = self.config.get(parameter)
         if pattern == "*":
             for parameter_pattern in property_dic:
