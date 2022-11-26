@@ -1,7 +1,16 @@
-# file-mover
-
-An open source file manager CLI that enables moving files based on file properties and specified criteria. 
-![fm_demo](https://user-images.githubusercontent.com/114060741/204101804-8fdfe4ca-30e3-46ae-a75c-28249040d261.gif)
+<div align="center">
+<br>
+  <h1> fmover </h1>
+  <i> An open source file manager CLI that enables moving files based on file properties and specified criteria.
+</i>
+  <br>
+  <br>
+  </p>
+    <p align="center">
+      <img src="https://user-images.githubusercontent.com/114060741/204101804-8fdfe4ca-30e3-46ae-a75c-28249040d261.gif">
+    <h1>
+  </p>
+</div>
 
 
 ## Description
