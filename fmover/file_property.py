@@ -17,7 +17,7 @@ class FileMetadata:
         get_file_properties(): Returns a dictionary of the file properties "WHERE_FROM", "NAME", "FILE_EXTENSION"
     """
 
-    def __init__(self, file:str):
+    def __init__(self, file: str):
         self.file = file
 
     def get_file_name_with_extension(self):
@@ -44,7 +44,7 @@ class FileMetadata:
         """
         # TODO: This does only work on macos. Make it work on windows and linux
         where_from = OSXMetaData(self.file).get("kMDItemWhereFroms")
-        return ''.join(where_from) if where_from is not None else 'UNKNOWN'
+        return ''.join(where_from) if where_from else 'UNKNOWN'
 
     def get_file_properties(self) -> dict:
         """

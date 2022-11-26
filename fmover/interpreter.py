@@ -1,5 +1,4 @@
-import logging
-logger = logging.getLogger(__name__)
+from fmover.base_logger import logger
 
 
 def _get_parameter(token: str) -> str:
@@ -65,7 +64,7 @@ class Interpreter:
         for command in self.commands:
             (antecedent, consequent), = command.items()
             if self.__antecedent_corresponds(antecedent):
-                logger.info(f"Executed command: {command}")
+                logger.debug(f"Executed command: {command}")
                 return self.__get_corresponding_path(consequent)
 
     def __antecedent_corresponds(self, antecedent: str) -> bool:
@@ -86,6 +85,8 @@ class Interpreter:
         parameter, pattern = _get_parameter(token), _get_pattern(token)
         property_dic: dict = self.config.get(parameter)
         file_property: str = self.file_properties.get(parameter)
+        if parameter not in self.file_properties:
+            raise ValueError(f"The parameter and property {parameter} is not supported by the program")
         if pattern == "*":
             return any(property_pattern in file_property for property_pattern in property_dic)
         elif pattern in file_property:
@@ -99,6 +100,8 @@ class Interpreter:
         """
         parameter, pattern = _get_parameter(token), _get_pattern(token)
         property_dic: dict = self.config.get(parameter)
+        if parameter not in self.file_properties:
+            raise ValueError(f"The parameter and property {parameter} is not supported by the program")
         if pattern == "*":
             for parameter_pattern in property_dic:
                 if parameter_pattern in self.file_properties.get(parameter):
