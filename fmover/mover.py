@@ -63,9 +63,11 @@ class Mover:
         if not exists(dir_of_new_file) and force:
             mkdir(dir_of_new_file)
         elif not exists(dir_of_new_file):
-            raise FileNotFoundError(f"The destination directory does not exist: {dir_of_new_file} ")
+            logger.warning(f"The destination directory does not exist: {dir_of_new_file} ")
+            return
         if exists(new_file_path):
-            raise FileExistsError(f"The file already exists in the destination directory: {new_file_path}")
+            logger.warning(f"A file with the same name already exists in the destination directory: {new_file_path}")
+            return
 
         shutil.move(file_path, new_file_path)
         if should_notify:

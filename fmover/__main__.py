@@ -22,7 +22,7 @@ def main():
         try:
             c_handler.open_config(args.openConfig)
         except (FileNotFoundError, OSError) as e:
-            print(e)
+            logger.error(e)
             exit(1)
 
     # The user wants to print the content of a given configuration file
@@ -30,7 +30,7 @@ def main():
         try:
             c_handler.print_config_content(args.printConfig)
         except FileNotFoundError as e:
-            print(e)
+            logger.error(e)
             exit(1)
 
     # The user wants to create a new configuration file with a given basename
@@ -56,7 +56,7 @@ def main():
                 print("Configuration file deleted. The new list of configurations is:")
                 c_handler.print_configs()
         except FileNotFoundError as e:
-            print(e)
+            logger.error(e)
             exit(1)
 
     # The user wants to move a single file based on a given configuration and a given file path
@@ -70,22 +70,16 @@ def main():
             # The user did not provide a valid configuration file
             logger.error(e)
             exit(1)
-        except FileExistsError as e:
-            print(e)
-            pass
 
     # The user wants to move all files in a directory based on a given configuration and a given directory path
     if args.moveAllFilesInFolder:
         try:
             dir_path, config = tuple(args.moveAllFilesInFolder)
             Mover(c_handler.get_config_path(config)).move_files_in_dir(dir_path, not args.silent, args.force)
-        except (ValueError, FileNotFoundError) as e:
+        except (ValueError) as e:
             # The user did not provide a valid configuration file
-            print(e)
+            logger.error(e)
             exit(1)
-        except FileExistsError as e:
-            print(e)
-            pass
 
 
 if __name__ == '__main__':
