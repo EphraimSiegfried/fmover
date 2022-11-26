@@ -1,5 +1,4 @@
 import json
-import os
 
 
 class MoveConfig:
@@ -75,7 +74,7 @@ class MoveConfig:
         return True
 
     def __validate_token(self, token: str):
-        if not "(" in token or not ")" in token:
+        if "(" not in token or ")" not in token:
             raise ValueError(
                 f"The token {token} is not a valid token. A token must have the form \"PARAMETER(PATTERN)\"")
         parameter, pattern = token.split("(")
