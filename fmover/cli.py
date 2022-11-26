@@ -1,10 +1,7 @@
 import argparse
-import os
-import fmover.configs as configs
 
 
 def enable_argument_parser() -> argparse.ArgumentParser:
-
     argument_parser = argparse.ArgumentParser(
         prog="mover",
         description="Move files based on given rules and file properties"
@@ -17,17 +14,14 @@ def enable_argument_parser() -> argparse.ArgumentParser:
         help="List all configurations"
     )
 
-    configurations = [c.replace('.json', '') for c in configs.get_list_of_configurations()]
     argument_parser.add_argument(
         "-o", "--open",
-        choices=configurations,
         type=str,
         dest="openConfig",
         help="Open configuration file")
 
     argument_parser.add_argument(
         "-p", "--print",
-        choices=configurations,
         type=str,
         dest="printConfig",
         help="Print configuration")
@@ -42,7 +36,6 @@ def enable_argument_parser() -> argparse.ArgumentParser:
     argument_parser.add_argument(
         "-d", "--delete",
         type=str,
-        choices=configurations,
         metavar="configName",
         dest="deleteConfig",
         help="Delete a configuration"
@@ -69,5 +62,12 @@ def enable_argument_parser() -> argparse.ArgumentParser:
         action="store_true",
         dest="silent",
         help="Do not notify that the file has been moved")
+
+    # Optional force argument which creates a destination directory if it does not exist
+    argument_parser.add_argument(
+        "-f", "--force",
+        action="store_true",
+        dest="force",
+        help="Create destination directory if it does not exist")
 
     return argument_parser
