@@ -7,7 +7,7 @@
   <br>
   <br>
     <p align="center">
-      <img src="../../Documents/fmover_demo.gif" alt="A demo of fmover moving files in a directory">
+      <img src="https://user-images.githubusercontent.com/114060741/204161513-aaa94afc-9ed0-48ef-9ce1-053d0d6eab8d.gif" alt="A demo of fmover moving files in a directory">
   </p>
 </div>
 
