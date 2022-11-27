@@ -20,6 +20,6 @@ setup(
         "License :: OSI Approved :: MIT License",
         "Topic :: Desktop Environment :: File Managers"
     ],
-    entry_points={"console_scripts":["fmover = fmover.__main__:main"]},
+    entry_points={"console_scripts":["fmover = src.fmover.__main__:main"]},
     install_requires=["notifypy>=1.0.3.0", "osxmetadata>=1.2.2", "appdirs"]
 )
