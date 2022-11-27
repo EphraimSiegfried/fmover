@@ -1,5 +1,5 @@
 import unittest
-from fmover import interpreter
+from src.fmover import interpreter
 
 
 class InterpreterTest(unittest.TestCase):

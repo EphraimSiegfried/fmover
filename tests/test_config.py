@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from fmover.config import MoveConfig
+from src.fmover.config import MoveConfig
 
 
 class TestMoveConfig(TestCase):
