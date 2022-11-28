@@ -2,10 +2,10 @@ import shutil
 from os import listdir, getcwd, path, mkdir
 from os.path import isfile, join, isabs, normpath, exists, dirname, isdir, relpath
 import notifypy as notify
-from src.fmover.config import MoveConfig
-from src.fmover.file_property import FileMetadata
-from src.fmover.interpreter import Interpreter
-from src.fmover.base_logger import logger
+from fmover.config import MoveConfig
+from fmover.file_property import FileMetadata
+from fmover.interpreter import Interpreter
+from fmover.base_logger import logger
 
 
 class Mover:
@@ -63,7 +63,9 @@ class Mover:
         if not exists(dir_of_new_file) and force:
             mkdir(dir_of_new_file)
         elif not exists(dir_of_new_file):
-            logger.warning(f"The destination directory does not exist: {dir_of_new_file} ")
+            logger.warning(f"The destination directory does not exist: {dir_of_new_file} "
+                           f"\n if you wish to create directories if they do not exist, "
+                           f"please add the -f flag")
             return
         if exists(new_file_path):
             logger.warning(f"A file with the same name already exists in the destination directory: {new_file_path}")
