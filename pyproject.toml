@@ -1,17 +1,17 @@
 [build-system]
-requires = ["setuptools>=61.0"]
+requires = ["setuptools"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "fmover"
-version = "0.0.1"
 authors = [
     {name = "Ephraim Siegfried", email = "ephraim.siegfried@hotmail.com"}]
 description = "Move files based on file properties and given criteria"
+version="0.0.3"
 readme = "README.md"
 requires-python = ">=3.6"
 keywords = ["filemanager","filemover","mover", "fileorganizer"]
-license = "MIT"
+license = {text = "MIT"}
 classifiers = [
     "Development Status :: 3 - Alpha",
     "License :: OSI Approved :: MIT License",
@@ -25,14 +25,13 @@ classifiers = [
     "Topic :: Utilities",
 ]
 dependencies = [
-    "notifypy>=1.0.3.0",
-    "osxmetadata>=1.2.2",
-    "appdirs"
+    'appdirs==1.4.4',
+    'notifypy==1.0.3.0',
+    'osxmetadata==1.2.2'
 ]
-dynamic = ["version"]
 
 [project.urls]
 homepage = "https://github.com/EphraimSiegfried/fmover"
 
 [project.scripts]
-fmover = "src.fmover.__main__:main"
+fmover = "fmover.__main__:main"
