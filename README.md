@@ -130,7 +130,7 @@ These singleton dictionaries are commands which consist of antecedents (as keys)
 * An antecedent consist of tokens which are seperated by "&". A consequent only has one token.
 * Tokens consist of a parameter and a pattern. The tokens have the following form: "PARAMETER(PATTERN)".
 The parameter can be one of the following: "NAME", "FILE_EXTENSION", "WHERE_FROM".
-The pattern can be a string or a wildcard "*".
+The pattern can be a string or a wildcard "*". A wildcard matches any pattern in the respective property.
 * If the parameter is declared in the command it must be a property in the config.
 
 This is an example of a valid command section:
