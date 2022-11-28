@@ -1,10 +1,10 @@
 import os.path
 
-import src.fmover.cli as cli
-from src.fmover.configs import MoveConfigsHandler
-from src.fmover.mover import Mover
+import fmover.cli as cli
+from fmover.configs import MoveConfigsHandler
+from fmover.mover import Mover
 import appdirs
-from src.fmover.base_logger import logger
+from fmover.base_logger import logger
 
 
 def main():

@@ -1,4 +1,4 @@
-from src.fmover.base_logger import logger
+from fmover.base_logger import logger
 
 
 def _get_parameter(token: str) -> str:
