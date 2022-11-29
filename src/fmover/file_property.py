@@ -1,5 +1,6 @@
-from osxmetadata import OSXMetaData
 import os
+import subprocess
+import sys
 
 
 class FileMetadata:
@@ -43,8 +44,13 @@ class FileMetadata:
         :return: the source where the file was obtained from. If nothing is found, it returns "UNKNOWN"
         """
         # TODO: This does only work on macos. Make it work on windows and linux
-        where_from = OSXMetaData(self.file).get("kMDItemWhereFroms")
-        return ''.join(where_from) if where_from else 'UNKNOWN'
+        if sys.platform == "darwin":
+            try:
+                where_from = subprocess.check_output(["mdls", "-name", "kMDItemWhereFroms", self.file]).decode().split("=")[1].strip()
+                return where_from if where_from != "(null)" else "UNKNOWN"
+            except subprocess.CalledProcessError:
+                raise FileNotFoundError(f"Could not read where the file {self.file} was obtained from")
+        return "UNKNOWN"
 
     def get_file_properties(self) -> dict:
         """
