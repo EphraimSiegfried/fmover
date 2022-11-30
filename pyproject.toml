@@ -1,17 +1,11 @@
-[build-system]
-requires = ["setuptools"]
-build-backend = "setuptools.build_meta"
-
-[project]
+[tool.poetry]
 name = "fmover"
-authors = [
-    {name = "Ephraim Siegfried", email = "ephraim.siegfried@hotmail.com"}]
+version = "0.0.3"
 description = "Move files based on file properties and given criteria"
-version="0.0.3"
-readme = "README.md"
-requires-python = ">=3.6"
+license = "MIT"
+authors = ["Ephraim Siegfried <ephraim.siegfried@hotmail.com>",]
+repository="https://github.com/EphraimSiegfried/fmover"
 keywords = ["filemanager","filemover","mover", "fileorganizer"]
-license = {text = "MIT"}
 classifiers = [
     "Development Status :: 3 - Alpha",
     "License :: OSI Approved :: MIT License",
@@ -24,14 +18,18 @@ classifiers = [
     "Topic :: Desktop Environment :: File Managers",
     "Topic :: Utilities",
 ]
-dependencies = [
-    'appdirs==1.4.4',
-    'notifypy==1.0.3.0',
-    'osxmetadata==1.2.2'
+packages = [
+    { include = "fmover", from = "src" },
 ]
 
-[project.urls]
-homepage = "https://github.com/EphraimSiegfried/fmover"
+[tool.poetry.dependencies]
+python= "^3.6"
+appdirs = "^1.4.4"
+notifypy = "^1.0.3.0"
 
-[project.scripts]
+[tool.poetry.scripts]
 fmover = "fmover.__main__:main"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
