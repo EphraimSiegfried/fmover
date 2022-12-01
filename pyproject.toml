@@ -1,8 +1,9 @@
 [tool.poetry]
 name = "fmover"
-version = "0.0.3"
+version = "0.0.4"
 description = "Move files based on file properties and given criteria"
 license = "MIT"
+readme = "README.md"
 authors = ["Ephraim Siegfried <ephraim.siegfried@hotmail.com>",]
 repository="https://github.com/EphraimSiegfried/fmover"
 keywords = ["filemanager","filemover","mover", "fileorganizer"]
