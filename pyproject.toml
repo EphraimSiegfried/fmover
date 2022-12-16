@@ -26,10 +26,10 @@ packages = [
 [tool.poetry.dependencies]
 python= "^3.6"
 appdirs = "^1.4.4"
-notifypy = "^1.0.3.0"
+notify-py = "^0.3.38"
 
 [tool.poetry.scripts]
-fmover = "fmover.__main__:main"
+fmover = "fmover.cli:main"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
