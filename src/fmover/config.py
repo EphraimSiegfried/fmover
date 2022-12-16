@@ -53,7 +53,7 @@ class MoveConfig:
         """
 
         if "COMMAND" not in self.config:
-            raise ValueError(f"The config does not have a key \"COMMAND\"")
+            raise ValueError(f"The configuration does not have the key \"COMMAND\"")
 
         if not isinstance(self.config["COMMAND"], list):
             raise ValueError(f"The value of the key \"COMMAND\" is not a list of dictionaries")
@@ -83,4 +83,4 @@ class MoveConfig:
         if parameter not in self.config:
             raise ValueError(f"The parameter {parameter} is not declared in the config")
         if pattern != "*" and pattern not in self.config[parameter]:
-            raise ValueError(f"The pattern {pattern} is not declared in the config for the parameter {parameter}")
+            raise ValueError(f"The pattern {pattern} is not declared in the configuration for the parameter {parameter}")
