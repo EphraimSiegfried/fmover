@@ -74,8 +74,6 @@ class Interpreter:
         """
         return all(self.__token_corresponds(token.strip()) for token in antecedent.split("&"))
 
-    # This method returns true if the parameter of the given token has a pattern that is contained in the
-    # file property of the parameter
     def __token_corresponds(self, token: str) -> bool:
         """
         :param token: The token of an antecedent
