@@ -40,16 +40,15 @@ class MoveConfigsHandler:
 
     def list_configs(self) -> list:
         """
-        :return: A list of all the configuration files in the configurations directory
+        :return: A list of all the configuration names in the configurations directory without the extension
         """
-        return [f[:-5] for f in os.listdir(self.CONFIGS_DIR) if f.endswith(".json")]
+        return [c.replace('.json', '') for c in os.listdir(self.CONFIGS_DIR)]
 
     def print_configs(self) -> None:
         """
         Prints all the configurations in the configurations directory
         """
-        configs = [c.replace('.json', '') for c in self.list_configs()]
-        print(*configs, sep="\n")
+        print(*self.list_configs(), sep="\n")
 
     def print_config_content(self, config_name) -> None:
         """
@@ -78,8 +77,6 @@ class MoveConfigsHandler:
             subprocess.call(('open', config_path))
         else:
             subprocess.call(('xdg-open', config_path))
-
-
 
     def delete_config(self, config_name) -> None:
         """
@@ -118,4 +115,3 @@ class MoveConfigsHandler:
 
     def get_template(self):
         return {"COMMAND": [{}], "WHERE_FROM": {}, "NAME": {}, "FILE_EXTENSION": {}}
-
