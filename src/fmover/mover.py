@@ -1,7 +1,7 @@
 import shutil
 from os import listdir, getcwd, path, mkdir
 from os.path import isfile, join, isabs, normpath, exists, dirname, isdir, relpath
-import notifypy as notify
+import notifypy
 from fmover.config import MoveConfig
 from fmover.file_property import FileMetadata
 from fmover.interpreter import Interpreter
@@ -23,8 +23,12 @@ class Mover:
     """
 
     def __init__(self, move_config_path: str):
-        self.configuration = MoveConfig(move_config_path)
-        self.configuration.validate_config()
+        try:
+            self.configuration = MoveConfig(move_config_path)
+            self.configuration.validate_config()
+        except ValueError as e:
+            logger.error(f"Could not interpret configuration: {e}")
+            exit(1)
 
     def _get_new_file_location(self, file_data: FileMetadata) -> str:
         interpreter = Interpreter(file_properties=file_data.get_file_properties(),
@@ -36,7 +40,7 @@ class Mover:
         return join(location, file_data.get_file_name_with_extension())
 
     def _notify(self, file_name, new_location) -> None:
-        notification = notify.Notify()
+        notification = notifypy.Notify()
         notification.application_name = "File has been moved"
         notification.title = file_name
         notification.message = new_location
@@ -86,8 +90,6 @@ class Mover:
         """
         if not isabs(path_to_directory):
             path_to_directory = join(getcwd(), path_to_directory)
-        if not isdir(path_to_directory):
-            raise FileNotFoundError(f"The directory {path_to_directory} does not exist.")
         file_paths = [join(path_to_directory, file) for file in listdir(path_to_directory) if file[0] != "."
                       and isfile(join(path_to_directory, file))]
         for file_path in file_paths:
