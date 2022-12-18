@@ -8,7 +8,9 @@ logger.setLevel(logging.DEBUG)
 
 # Create log file if it does not exist
 # Paste python -c "import appdirs; print(appdirs.user_log_dir('fmover'))" in terminal to get the log directory
-log_path = appdirs.user_log_dir(''.join([appdirs.user_log_dir("fmover"), "/fmover.log"]))
+log_path = appdirs.user_log_dir(
+    "".join([appdirs.user_log_dir("fmover"), "/fmover.log"])
+)
 if not os.path.exists(appdirs.user_log_dir("fmover")):
     os.mkdir(appdirs.user_log_dir("fmover"))
 
@@ -27,6 +29,3 @@ console_handler.setFormatter(console_format)
 # Add handlers to the logger
 logger.addHandler(file_handler)
 logger.addHandler(console_handler)
-
-
-

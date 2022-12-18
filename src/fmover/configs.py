@@ -24,12 +24,18 @@ class MoveConfigsHandler:
     """
 
     def __init__(self, path_to_data_dir):
-        self.CONFIGS_DIR = os.path.join(path_to_data_dir, "configurations")
+        if os.path.basename(path_to_data_dir) == "configurations":
+            self.CONFIGS_DIR = path_to_data_dir
+            return
         if not os.path.exists(path_to_data_dir):
             os.mkdir(path_to_data_dir)
+        if not os.path.exists(os.path.join(path_to_data_dir, "configurations")):
             os.mkdir(self.CONFIGS_DIR)
-            with open(os.path.join(self.CONFIGS_DIR, "default.json"), 'w') as f:
+            with open(os.path.join(self.CONFIGS_DIR, "default.json"), "w") as f:
                 json.dump(self.get_default(), f, indent=2)
+            self.CONFIGS_DIR = os.path.join(path_to_data_dir, "configurations")
+            return
+        self.CONFIGS_DIR = os.path.join(path_to_data_dir, "configurations")
 
     def get_config_path(self, config_name) -> str:
         """
@@ -42,7 +48,7 @@ class MoveConfigsHandler:
         """
         :return: A list of all the configuration names in the configurations directory without the extension
         """
-        return [c.replace('.json', '') for c in os.listdir(self.CONFIGS_DIR)]
+        return [c.replace(".json", "") for c in os.listdir(self.CONFIGS_DIR)]
 
     def print_configs(self) -> None:
         """
@@ -57,9 +63,11 @@ class MoveConfigsHandler:
         """
         config_path = self.get_config_path(config_name)
         if not os.path.exists(config_path):
-            raise FileNotFoundError(f"The configuration file {config_name} does not exist. "
-                                    f"Choose one from the following: {self.list_configs()}")
-        with open(config_path, 'r') as f:
+            raise FileNotFoundError(
+                f"The configuration file {config_name} does not exist. "
+                f"Choose one from the following: {self.list_configs()}"
+            )
+        with open(config_path, "r") as f:
             print(f.read())
 
     def open_config(self, config_name) -> None:
@@ -69,14 +77,16 @@ class MoveConfigsHandler:
         """
         config_path = self.get_config_path(config_name)
         if not os.path.exists(config_path):
-            raise FileNotFoundError(f"The configuration file {config_name} does not exist. "
-                                    f"Choose one from the following: {self.list_configs()}")
+            raise FileNotFoundError(
+                f"The configuration file {config_name} does not exist. "
+                f"Choose one from the following: {self.list_configs()}"
+            )
         if sys.platform == "win32":
             os.startfile(config_path)
         elif sys.platform == "darwin":
-            subprocess.call(('open', config_path))
+            subprocess.call(("open", config_path))
         else:
-            subprocess.call(('xdg-open', config_path))
+            subprocess.call(("xdg-open", config_path))
 
     def delete_config(self, config_name) -> None:
         """
@@ -85,8 +95,10 @@ class MoveConfigsHandler:
         """
         config_path = self.get_config_path(config_name)
         if not os.path.exists(config_path):
-            raise FileNotFoundError(f"The configuration file {config_name} does not exist."
-                                    f" Choose one from the following: {self.list_configs()}")
+            raise FileNotFoundError(
+                f"The configuration file {config_name} does not exist."
+                f" Choose one from the following: {self.list_configs()}"
+            )
         os.remove(config_path)
 
     def create_config(self, config_name) -> None:
@@ -96,22 +108,51 @@ class MoveConfigsHandler:
         """
         config_path = self.get_config_path(config_name)
         if os.path.exists(config_path):
-            raise FileExistsError(f"The configuration file {config_name} already exists. "
-                                  f"These are the existing configurations: {self.list_configs()}")
-        with open(config_path, 'w') as f:
+            raise FileExistsError(
+                f"The configuration file {config_name} already exists. "
+                f"These are the existing configurations: {self.list_configs()}"
+            )
+        with open(config_path, "w") as f:
             json.dump(self.get_template(), f, indent=2)
 
     def get_default(self):
-        return {"COMMAND": [{"FILE_EXTENSION(*)": "FILE_EXTENSION(*)"}], "WHERE_FROM": {}, "NAME": {},
-                "FILE_EXTENSION": {
-                    ".pdf": "./PDF", ".ps": "./PDF", ".jpg": "./Photos", ".jpeg": "./Photos", ".Jpeg": "./Photos",
-                    ".gif": "./Photos",
-                    ".HEIC": "./Photos", ".heic": "./Photos", ".JPG": "./Photos", ".jp2": "./Photos",
-                    ".png": "./Photos",
-                    ".svg": "./Photos", ".mov": "./Videos", ".MOV": "./Videos", ".mp4": "./Videos", ".MP4": "./Videos",
-                    ".m4v": "./Videos", ".M4V": "./Videos", ".avi": "./Videos", ".AVI": "./Videos", ".docx": "./Text",
-                    ".odt": "./Text", ".doc": "./Text", ".pages": "./Text", ".txt": "./Text", ".rtf": "./Text",
-                    ".pptx": "./PowerPoint", ".m4a": "./Audio", ".wave": "./Audio", ".wav": "./Audio"}}
+        return {
+            "COMMAND": [{"FILE_EXTENSION(*)": "FILE_EXTENSION(*)"}],
+            "WHERE_FROM": {},
+            "NAME": {},
+            "FILE_EXTENSION": {
+                ".pdf": "./PDF",
+                ".ps": "./PDF",
+                ".jpg": "./Photos",
+                ".jpeg": "./Photos",
+                ".Jpeg": "./Photos",
+                ".gif": "./Photos",
+                ".HEIC": "./Photos",
+                ".heic": "./Photos",
+                ".JPG": "./Photos",
+                ".jp2": "./Photos",
+                ".png": "./Photos",
+                ".svg": "./Photos",
+                ".mov": "./Videos",
+                ".MOV": "./Videos",
+                ".mp4": "./Videos",
+                ".MP4": "./Videos",
+                ".m4v": "./Videos",
+                ".M4V": "./Videos",
+                ".avi": "./Videos",
+                ".AVI": "./Videos",
+                ".docx": "./Text",
+                ".odt": "./Text",
+                ".doc": "./Text",
+                ".pages": "./Text",
+                ".txt": "./Text",
+                ".rtf": "./Text",
+                ".pptx": "./PowerPoint",
+                ".m4a": "./Audio",
+                ".wave": "./Audio",
+                ".wav": "./Audio",
+            },
+        }
 
     def get_template(self):
         return {"COMMAND": [{}], "WHERE_FROM": {}, "NAME": {}, "FILE_EXTENSION": {}}

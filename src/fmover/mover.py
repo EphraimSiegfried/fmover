@@ -31,9 +31,11 @@ class Mover:
             exit(1)
 
     def _get_new_file_location(self, file_data: FileMetadata) -> str:
-        interpreter = Interpreter(file_properties=file_data.get_file_properties(),
-                                  move_config=self.configuration.get_properties(),
-                                  commands=self.configuration.get_commands())
+        interpreter = Interpreter(
+            file_properties=file_data.get_file_properties(),
+            move_config=self.configuration.get_properties(),
+            commands=self.configuration.get_commands(),
+        )
         location = interpreter.parse_command()
         if location is None:
             location = dirname(file_data.file)
@@ -67,21 +69,29 @@ class Mover:
         if not exists(dir_of_new_file) and force:
             mkdir(dir_of_new_file)
         elif not exists(dir_of_new_file):
-            logger.warning(f"The destination directory does not exist: {dir_of_new_file} "
-                           f"\n if you wish to create directories if they do not exist, "
-                           f"please add the -f flag")
+            logger.warning(
+                f"The destination directory does not exist: {dir_of_new_file} "
+                f"\n if you wish to create directories if they do not exist, "
+                f"please add the -f flag"
+            )
             return
         if exists(new_file_path):
-            logger.warning(f"A file with the same name already exists in the destination directory: {new_file_path}")
+            logger.warning(
+                f"A file with the same name already exists in the destination directory: {new_file_path}"
+            )
             return
 
         shutil.move(file_path, new_file_path)
         if should_notify:
             self._notify(file_data.get_file_name_with_extension(), new_file_path)
         logger.info(f"File successfully moved: {relpath(new_file_path, file_path)}")
-        logger.debug(f"File successfully moved: {normpath(file_path)} -> {new_file_path}")
+        logger.debug(
+            f"File successfully moved: {normpath(file_path)} -> {new_file_path}"
+        )
 
-    def move_files_in_dir(self, path_to_directory: str, should_notify: bool, force: bool) -> None:
+    def move_files_in_dir(
+        self, path_to_directory: str, should_notify: bool, force: bool
+    ) -> None:
         """
         Moves all files in a directory to a new location based on the configuration file
         :param force: If true, the destination directory will be created if it does not exist
@@ -90,7 +100,10 @@ class Mover:
         """
         if not isabs(path_to_directory):
             path_to_directory = join(getcwd(), path_to_directory)
-        file_paths = [join(path_to_directory, file) for file in listdir(path_to_directory) if file[0] != "."
-                      and isfile(join(path_to_directory, file))]
+        file_paths = [
+            join(path_to_directory, file)
+            for file in listdir(path_to_directory)
+            if file[0] != "." and isfile(join(path_to_directory, file))
+        ]
         for file_path in file_paths:
             self.move_file(file_path, should_notify, force)

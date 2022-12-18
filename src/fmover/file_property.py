@@ -46,16 +46,27 @@ class FileMetadata:
         # TODO: This does only work on macos. Make it work on windows and linux
         if sys.platform == "darwin":
             try:
-                where_from = subprocess.check_output(["mdls", "-name", "kMDItemWhereFroms", self.file]).decode().split("=")[1].strip()
+                where_from = (
+                    subprocess.check_output(
+                        ["mdls", "-name", "kMDItemWhereFroms", self.file]
+                    )
+                    .decode()
+                    .split("=")[1]
+                    .strip()
+                )
                 return where_from if where_from != "(null)" else "UNKNOWN"
             except subprocess.CalledProcessError:
-                raise FileNotFoundError(f"Could not read where the file {self.file} was obtained from")
+                raise FileNotFoundError(
+                    f"Could not read where the file {self.file} was obtained from"
+                )
         return "UNKNOWN"
 
     def get_file_properties(self) -> dict:
         """
         :return: a dictionary of the file properties "WHERE_FROM", "NAME", "FILE_EXTENSION"
         """
-        return {"WHERE_FROM": self.get_where_from(),
-                "NAME": self.get_file_name(),
-                "FILE_EXTENSION": self.get_file_extension()}
+        return {
+            "WHERE_FROM": self.get_where_from(),
+            "NAME": self.get_file_name(),
+            "FILE_EXTENSION": self.get_file_extension(),
+        }

@@ -53,10 +53,12 @@ class MoveConfig:
         """
 
         if "COMMAND" not in self.config:
-            raise ValueError(f"The configuration does not have the key \"COMMAND\"")
+            raise ValueError(f'The configuration does not have the key "COMMAND"')
 
         if not isinstance(self.config["COMMAND"], list):
-            raise ValueError(f"The value of the key \"COMMAND\" is not a list of dictionaries")
+            raise ValueError(
+                f'The value of the key "COMMAND" is not a list of dictionaries'
+            )
 
         for command in self.config["COMMAND"]:
             if not isinstance(command, dict):
@@ -76,11 +78,14 @@ class MoveConfig:
     def __validate_token(self, token: str):
         if "(" not in token or ")" not in token:
             raise ValueError(
-                f"The token {token} is not a valid token. A token must have the form \"PARAMETER(PATTERN)\"")
+                f'The token {token} is not a valid token. A token must have the form "PARAMETER(PATTERN)"'
+            )
         parameter, pattern = token.split("(")
         parameter = parameter.strip()
         pattern = pattern.replace(")", "").strip()
         if parameter not in self.config:
             raise ValueError(f"The parameter {parameter} is not declared in the config")
         if pattern != "*" and pattern not in self.config[parameter]:
-            raise ValueError(f"The pattern {pattern} is not declared in the configuration for the parameter {parameter}")
+            raise ValueError(
+                f"The pattern {pattern} is not declared in the configuration for the parameter {parameter}"
+            )

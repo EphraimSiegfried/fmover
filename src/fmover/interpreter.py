@@ -6,7 +6,7 @@ def _get_parameter(token: str) -> str:
     :param token: a token of the form "PARAMETER(PATTERN)"
     :return: the parameter of the token
     """
-    return token[0:token.find("(")].strip()
+    return token[0 : token.find("(")].strip()
 
 
 def _get_pattern(token: str) -> str:
@@ -14,7 +14,7 @@ def _get_pattern(token: str) -> str:
     :param token: a token of the form "PARAMETER(PATTERN)"
     :return: the pattern of the token
     """
-    return token[token.find("(") + 1:token.find(")")].strip()
+    return token[token.find("(") + 1 : token.find(")")].strip()
 
 
 class Interpreter:
@@ -62,7 +62,7 @@ class Interpreter:
         :return: The path of the first command whose antecedent is true
         """
         for command in self.commands:
-            (antecedent, consequent), = command.items()
+            ((antecedent, consequent),) = command.items()
             if self.__antecedent_corresponds(antecedent):
                 logger.debug(f"Executed command: {command}")
                 return self.__get_corresponding_path(consequent)
@@ -72,7 +72,9 @@ class Interpreter:
         :param antecedent: The antecedent of a command
         :return: True if all tokens in an antecedent are true (which are connected by conjunction)
         """
-        return all(self.__token_corresponds(token.strip()) for token in antecedent.split("&"))
+        return all(
+            self.__token_corresponds(token.strip()) for token in antecedent.split("&")
+        )
 
     def __token_corresponds(self, token: str) -> bool:
         """
@@ -84,9 +86,13 @@ class Interpreter:
         property_dic: dict = self.config.get(parameter)
         file_property: str = self.file_properties.get(parameter)
         if parameter not in self.file_properties:
-            raise ValueError(f"The parameter and property {parameter} is not supported by the program")
+            raise ValueError(
+                f"The parameter and property {parameter} is not supported by the program"
+            )
         if pattern == "*":
-            return any(property_pattern in file_property for property_pattern in property_dic)
+            return any(
+                property_pattern in file_property for property_pattern in property_dic
+            )
         elif pattern in file_property:
             return True
         return False
@@ -99,7 +105,9 @@ class Interpreter:
         parameter, pattern = _get_parameter(token), _get_pattern(token)
         property_dic: dict = self.config.get(parameter)
         if parameter not in self.file_properties:
-            raise ValueError(f"The parameter and property {parameter} is not supported by the program")
+            raise ValueError(
+                f"The parameter and property {parameter} is not supported by the program"
+            )
         if pattern == "*":
             for parameter_pattern in property_dic:
                 if parameter_pattern in self.file_properties.get(parameter):

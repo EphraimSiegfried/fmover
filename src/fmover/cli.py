@@ -3,8 +3,7 @@ from fmover.configs import MoveConfigsHandler
 from fmover.mover import Mover
 import os
 import appdirs
-
-configs_handler = MoveConfigsHandler(appdirs.user_config_dir("fmover"))
+from typing import Optional, Sequence
 
 
 def is_file(path: str) -> str:
@@ -31,93 +30,138 @@ def is_dir(path: str):
     return path
 
 
-def move_file(file_path: str, config_name: str, notify: bool, force: bool) -> None:
-    """
-    Used to call the move_file method of the Mover class in the "set_defaults" argument of the move_file_parser.
-    """
-    mover = Mover(configs_handler.get_config_path(config_name))
-    mover.move_file(file_path, notify, force)
-
-
-def move_files_in_dir(dir_path: str, config_name: str, notify: bool, force: bool) -> None:
-    """
-    Used to call the move_files_in_dir method of the Mover class in the "set_defaults" argument of the move_dir_parser.
-    """
-    mover = Mover(configs_handler.get_config_path(config_name))
-    mover.move_files_in_dir(dir_path, notify, force)
-
-
-def main():
+def main(argv: Optional[Sequence[str]] = None) -> None:
     """
     This is the entry point for the fmover command line interface.
     In this method, the command line arguments are parsed.
     """
-    configs = configs_handler.list_configs()
 
     # Creates the parser
     arg_parser = argparse.ArgumentParser(
-        prog="fmover",
-        description="Move files based on given rules and file properties"
+        prog="fmover", description="Move files based on given rules and file properties"
     )
+    arg_parser.add_argument(
+        "--configdir",
+        "-c",
+        type=is_dir,
+        help="The directory where the configuration files are stored",
+    )
+
     subparsers = arg_parser.add_subparsers(dest="command")
 
     # List all configuration names
     list_parser = subparsers.add_parser("list", help="List all configurations")
-    list_parser.set_defaults(func=configs_handler.print_configs)
 
     # Create a configuration
-    create_config_parser = subparsers.add_parser('create', help='Create a configuration file')
-    create_config_parser.add_argument('config_name', help='The name of the configuration file', type=str)
-    create_config_parser.set_defaults(func=configs_handler.create_config)
+    create_config_parser = subparsers.add_parser(
+        "create", help="Create a configuration file"
+    )
+    create_config_parser.add_argument(
+        "config_new_name", help="The name of the configuration file", type=str
+    )
 
     # Open a configuration
-    open_config_parser = subparsers.add_parser('open', help='Open a configuration file')
-    open_config_parser.add_argument('config_name', help='The name of the configuration file', choices=configs)
-    open_config_parser.set_defaults(func=configs_handler.open_config)
+    open_config_parser = subparsers.add_parser("open", help="Open a configuration file")
+    open_config_parser.add_argument(
+        "config_name", help="The name of the configuration file"
+    )
 
     # Delete a configuration
-    delete_config_parser = subparsers.add_parser('delete', help='Delete a configuration file')
-    delete_config_parser.add_argument('config_name', help='The name of the configuration file', choices=configs)
-    delete_config_parser.set_defaults(func=configs_handler.delete_config)
+    delete_config_parser = subparsers.add_parser(
+        "delete", help="Delete a configuration file"
+    )
+    delete_config_parser.add_argument(
+        "config_name", help="The name of the configuration file"
+    )
 
     # Print a configuration
-    print_config_parser = subparsers.add_parser('print', help='Print a configuration file')
-    print_config_parser.add_argument('config_name', help='The name of the configuration file', choices=configs)
-    print_config_parser.set_defaults(func=configs_handler.print_config_content)
+    print_config_parser = subparsers.add_parser(
+        "print", help="Print a configuration file"
+    )
+    print_config_parser.add_argument(
+        "config_name", help="The name of the configuration file"
+    )
 
     # Move one file
-    move_file_parser = subparsers.add_parser('move', help='Move one file')
-    move_file_parser.add_argument('file_path', help='The path of the file', type=is_file)
-    move_file_parser.add_argument('config_name',metavar="config_name", help='The name of the configuration file', choices=configs)
-    move_file_parser.add_argument('-n', '--notify', action='store_true',
-                                  help='Show a notification when the file is moved')
-    move_file_parser.add_argument('-f', '--force', action='store_true',
-                                  help='Create the destination directory if it does not exist')
-    move_file_parser.set_defaults(func=move_file)
+    move_file_parser = subparsers.add_parser("move", help="Move one file")
+    move_file_parser.add_argument(
+        "file_path", help="The path of the file", type=is_file
+    )
+    move_file_parser.add_argument(
+        "config_name", metavar="config_name", help="The name of the configuration file"
+    )
+    move_file_parser.add_argument(
+        "-n",
+        "--notify",
+        action="store_true",
+        help="Show a notification when the file is moved",
+    )
+    move_file_parser.add_argument(
+        "-f",
+        "--force",
+        action="store_true",
+        help="Create the destination directory if it does not exist",
+    )
 
     # Move all files in a directory
-    move_dir_parser = subparsers.add_parser('move-all', help='Move all files in a directory')
-    move_dir_parser.add_argument('dir_path', help='The path of the directory', type=is_dir)
-    move_dir_parser.add_argument('config_name', metavar="config_name",help='The name of the configuration file', choices=configs)
-    move_dir_parser.add_argument('-n', '--notify', action='store_true',
-                                 help='Show a notification when the file is moved')
-    move_dir_parser.add_argument('-f', '--force', action='store_true',
-                                 help='Create the destination directory if it does not exist')
-    move_dir_parser.set_defaults(func=move_files_in_dir)
+    move_dir_parser = subparsers.add_parser(
+        "move-all", help="Move all files in a directory"
+    )
+    move_dir_parser.add_argument(
+        "dir_path", help="The path of the directory", type=is_dir
+    )
+    move_dir_parser.add_argument(
+        "config_name", metavar="config_name", help="The name of the configuration file"
+    )
+    move_dir_parser.add_argument(
+        "-n",
+        "--notify",
+        action="store_true",
+        help="Show a notification when the file is moved",
+    )
+    move_dir_parser.add_argument(
+        "-f",
+        "--force",
+        action="store_true",
+        help="Create the destination directory if it does not exist",
+    )
 
     # Parse the arguments
-    args = arg_parser.parse_args()
-    if args.command is None:
+    args = arg_parser.parse_args(argv)
+    config_dir = args.configdir if args.configdir else appdirs.user_config_dir("fmover")
+    configs_handler = MoveConfigsHandler(config_dir)
+
+    if not args.command:
         arg_parser.print_help()
         return
+    if (
+        hasattr(args, "config_name")
+        and args.config_name not in configs_handler.list_configs()
+    ):
+        print(
+            f"The configuration '{args.config_name}' does not exist. "
+            f"Choose one of the following configurations: {configs_handler.list_configs()} or create a new one."
+        )
+        return
+    if args.command == "list":
+        configs_handler.print_configs()
+    elif args.command == "create":
+        configs_handler.create_config(args.config_new_name)
+    elif args.command == "open":
+        configs_handler.open_config(args.config_name)
+    elif args.command == "delete":
+        configs_handler.delete_config(args.config_name)
+    elif args.command == "print":
+        configs_handler.print_config_content(args.config_name)
+    elif args.command == "move":
+        mover = Mover(configs_handler.get_config_path(args.config_name))
+        mover.move_file(args.file_path, should_notify=args.notify, force=args.force)
+    elif args.command == "move-all":
+        mover = Mover(configs_handler.get_config_path(args.config_name))
+        mover.move_files_in_dir(
+            args.dir_path, should_notify=args.notify, force=args.force
+        )
 
-    # Call the function
-    args = arg_parser.parse_args()
-    args_ = vars(args).copy()
-    args_.pop('command', None)
-    args_.pop('func', None)
-    args.func(**args_)
 
-
-if __name__ == '__main__':
-    main()
+if __name__ == "__main__":
+    exit(main())
