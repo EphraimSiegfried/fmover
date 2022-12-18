@@ -13,11 +13,11 @@ class InterpreterTest(unittest.TestCase):
 
     def test_parse_command_returns_correct_path(self):
         self.interpreter.commands = [{'WHERE_FROM(wiki) & NAME(China):': 'WHERE_FROM(wiki)'}]
-        self.assertIs('Users/Peter/Library', self.interpreter.parse_command())
+        self.assertEqual('Users/Peter/Library', self.interpreter.parse_command())
 
         self.interpreter.commands = [{'WHERE_FROM(uni) & NAME(China):': 'WHERE_FROM(wiki)'},
                                      {'WHERE_FROM(wiki) & NAME(China):': 'WHERE_FROM(wiki)'}]
-        self.assertIs('Users/Peter/Library', self.interpreter.parse_command())
+        self.assertEqual('Users/Peter/Library', self.interpreter.parse_command())
 
         self.interpreter.commands = [{'WHERE_FROM(uni) & NAME(China):': 'WHERE_FROM(wiki)'}]
         self.assertIs(None, self.interpreter.parse_command())
