@@ -8,14 +8,16 @@ logger.setLevel(logging.DEBUG)
 
 # Create log file if it does not exist
 # Paste python -c "import appdirs; print(appdirs.user_log_dir('fmover'))" in terminal to get the log directory
-log_path = appdirs.user_log_dir(
-    "".join([appdirs.user_log_dir("fmover"), "/fmover.log"])
-)
-if not os.path.exists(appdirs.user_log_dir("fmover")):
-    os.mkdir(appdirs.user_log_dir("fmover"))
+
+log_dir = appdirs.user_log_dir("fmover")
+if not os.path.exists(os.path.dirname(log_dir)):
+    log_dir = os.path.dirname(os.path.abspath(__file__))
+if not os.path.exists(log_dir):
+    os.makedirs(log_dir)
+log_file = os.path.join(log_dir, "fmover.log")
 
 # Create handlers
-file_handler = logging.FileHandler(log_path)
+file_handler = logging.FileHandler(log_file)
 console_handler = logging.StreamHandler(sys.stdout)
 file_handler.setLevel(logging.DEBUG)
 console_handler.setLevel(logging.INFO)

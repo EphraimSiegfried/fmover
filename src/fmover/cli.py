@@ -128,7 +128,12 @@ def main(argv: Optional[Sequence[str]] = None) -> None:
 
     # Parse the arguments
     args = arg_parser.parse_args(argv)
-    config_dir = args.configdir if args.configdir else appdirs.user_config_dir("fmover")
+    if args.configdir:
+        config_dir = args.configdir
+    elif os.path.exists(os.path.dirname(appdirs.user_config_dir("fmover"))):
+        config_dir = os.path.dirname(appdirs.user_config_dir("fmover"))
+    else:
+        config_dir = os.path.dirname(os.path.abspath(__file__))
     configs_handler = MoveConfigsHandler(config_dir)
 
     if not args.command:
