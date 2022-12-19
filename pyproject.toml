@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "fmover"
-version = "0.0.4"
+version = "0.1.0"
 description = "Move files based on file properties and given criteria"
 license = "MIT"
 readme = "README.md"
@@ -27,7 +27,6 @@ packages = [
 python= ">=3.7.2,<4.0"
 appdirs = "^1.4.4"
 notify-py = "^0.3.38"
-pytest = "^7.2.0"
 
 [tool.poetry.scripts]
 fmover = "fmover.cli:main"

@@ -1,0 +1,36 @@
+
+
+name: Publish to Pypi
+
+on:
+  push:
+    branches:
+      - main
+
+  workflow_dispatch:
+    inputs:
+      publish:
+        description: "Publish to pypi.org? (will not work from forks!)"
+        required: false
+        default: 'false'
+
+jobs:
+  publish:
+    runs-on: ubuntu-20.04
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Python 3.9
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
+
+      - name: Publish to pypi
+        uses: coveooss/pypi-publish-with-poetry@v1
+        with:
+          project-name: fmover
+          pypi-token: ${{ secrets.PYPI_API_TOKEN }}
+          pre-release: ${{ github.ref != 'refs/heads/main' }}
+          dry-run: ${{ github.ref != 'refs/heads/main' && github.event.inputs.publish != 'true' }}
