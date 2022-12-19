@@ -51,6 +51,7 @@ def main(argv: Optional[Sequence[str]] = None) -> None:
 
     # List all configuration names
     list_parser = subparsers.add_parser("list", help="List all configurations")
+    list_parser.add_argument("-v", "--verbose", action="store_true", help="Print the full path to the configuration files")
 
     # Create a configuration
     create_config_parser = subparsers.add_parser(
@@ -91,6 +92,12 @@ def main(argv: Optional[Sequence[str]] = None) -> None:
         "config_name", metavar="config_name", help="The name of the configuration file"
     )
     move_file_parser.add_argument(
+        "-d",
+        "--dry-run",
+        action="store_true",
+        help="Do not actually move the file, just print the destination",
+    )
+    move_file_parser.add_argument(
         "-n",
         "--notify",
         action="store_true",
@@ -114,6 +121,12 @@ def main(argv: Optional[Sequence[str]] = None) -> None:
         "config_name", metavar="config_name", help="The name of the configuration file"
     )
     move_dir_parser.add_argument(
+        "-d",
+        "--dry-run",
+        action="store_true",
+        help="Do not actually move the file, just print the destination",
+    )
+    move_dir_parser.add_argument(
         "-n",
         "--notify",
         action="store_true",
@@ -131,7 +144,7 @@ def main(argv: Optional[Sequence[str]] = None) -> None:
     if args.configdir:
         config_dir = args.configdir
     elif os.path.exists(os.path.dirname(appdirs.user_config_dir("fmover"))):
-        config_dir = os.path.dirname(appdirs.user_config_dir("fmover"))
+        config_dir = appdirs.user_config_dir("fmover")
     else:
         config_dir = os.path.dirname(os.path.abspath(__file__))
     configs_handler = MoveConfigsHandler(config_dir)
@@ -149,7 +162,7 @@ def main(argv: Optional[Sequence[str]] = None) -> None:
         )
         return
     if args.command == "list":
-        configs_handler.print_configs()
+        configs_handler.print_configs(verbose=args.verbose)
     elif args.command == "create":
         configs_handler.create_config(args.config_new_name)
     elif args.command == "open":
@@ -160,11 +173,11 @@ def main(argv: Optional[Sequence[str]] = None) -> None:
         configs_handler.print_config_content(args.config_name)
     elif args.command == "move":
         mover = Mover(configs_handler.get_config_path(args.config_name))
-        mover.move_file(args.file_path, should_notify=args.notify, force=args.force)
+        mover.move_file(args.file_path, should_notify=args.notify, force=args.force, dry_run=args.dry_run)
     elif args.command == "move-all":
         mover = Mover(configs_handler.get_config_path(args.config_name))
         mover.move_files_in_dir(
-            args.dir_path, should_notify=args.notify, force=args.force
+            args.dir_path, should_notify=args.notify, force=args.force, dry_run=args.dry_run
         )
 
 

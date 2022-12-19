@@ -48,12 +48,13 @@ class Mover:
         notification.message = new_location
         notification.send()
 
-    def move_file(self, file_path: str, should_notify: bool, force: bool) -> None:
+    def move_file(self, file_path: str, should_notify: bool = False, force: bool = False, dry_run: bool = False) -> None:
         """
         Moves a file to a new location based on the configuration file
         :param force: If true, the destination directory will be created if it does not exist
         :param file_path: The path of the file (can be a relative path)
         :param should_notify: If True, a pop-up notification will be shown
+        :param dry_run: If true, the file will not be moved
         """
         file_data = FileMetadata(file_path)
         logger.debug(f"File data: {file_data.get_file_properties()}")
@@ -63,7 +64,7 @@ class Mover:
         f_name = file_data.get_file_name_with_extension()
         dir_of_new_file = path.dirname(new_file_path)
         if file_path == new_file_path:
-            logger.info(f"The file is already in the correct location: {f_name}")
+            logger.info(f"No change: {f_name}")
             return
 
         if not exists(dir_of_new_file) and force:
@@ -80,23 +81,24 @@ class Mover:
                 f"A file with the same name already exists in the destination directory: {new_file_path}"
             )
             return
-
-        shutil.move(file_path, new_file_path)
+        if not dry_run:
+            shutil.move(file_path, new_file_path)
         if should_notify:
-            self._notify(file_data.get_file_name_with_extension(), new_file_path)
-        logger.info(f"File successfully moved: {relpath(new_file_path, file_path)}")
+            self._notify(f_name, new_file_path)
+        logger.info(f"Moved: {relpath(new_file_path, file_path)}")
         logger.debug(
-            f"File successfully moved: {normpath(file_path)} -> {new_file_path}"
+            f"Moved: {normpath(file_path)} -> {new_file_path}"
         )
 
     def move_files_in_dir(
-        self, path_to_directory: str, should_notify: bool, force: bool
+            self, path_to_directory: str, should_notify: bool = False, force: bool = False, dry_run: bool = False
     ) -> None:
         """
         Moves all files in a directory to a new location based on the configuration file
         :param force: If true, the destination directory will be created if it does not exist
         :param path_to_directory: The path of the directory
         :param should_notify: If True, a pop-up notification will be shown
+        :param dry_run: If true, the files will not be moved
         """
         if not isabs(path_to_directory):
             path_to_directory = join(getcwd(), path_to_directory)
@@ -106,4 +108,4 @@ class Mover:
             if file[0] != "." and isfile(join(path_to_directory, file))
         ]
         for file_path in file_paths:
-            self.move_file(file_path, should_notify, force)
+            self.move_file(file_path, should_notify, force, dry_run)
