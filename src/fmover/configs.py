@@ -30,31 +30,34 @@ class MoveConfigsHandler:
         if not os.path.exists(path_to_data_dir):
             os.mkdir(path_to_data_dir)
         if not os.path.exists(os.path.join(path_to_data_dir, "configurations")):
+            self.CONFIGS_DIR = os.path.join(path_to_data_dir, "configurations")
             os.mkdir(self.CONFIGS_DIR)
             with open(os.path.join(self.CONFIGS_DIR, "default.json"), "w") as f:
                 json.dump(self.get_default(), f, indent=2)
-            self.CONFIGS_DIR = os.path.join(path_to_data_dir, "configurations")
             return
         self.CONFIGS_DIR = os.path.join(path_to_data_dir, "configurations")
 
     def get_config_path(self, config_name) -> str:
         """
-        :param config_name: The name of the configuration file without the extension
+        :param config_name: The name of the configuration file
         :return: The absolute path to the configuration file
         """
         return os.path.join(self.CONFIGS_DIR, config_name + ".json")
 
-    def list_configs(self) -> list:
+    def list_configs(self, verbose: bool = False) -> list:
         """
-        :return: A list of all the configuration names in the configurations directory without the extension
+        :param verbose: If True, the full path to the configuration files will be returned
+        :return: A list of all the configurations in the configurations directory
         """
+        if verbose:
+            return [os.path.join(self.CONFIGS_DIR, f) for f in os.listdir(self.CONFIGS_DIR)]
         return [c.replace(".json", "") for c in os.listdir(self.CONFIGS_DIR)]
 
-    def print_configs(self) -> None:
+    def print_configs(self, verbose: bool = False) -> None:
         """
         Prints all the configurations in the configurations directory
         """
-        print(*self.list_configs(), sep="\n")
+        print(*self.list_configs(verbose), sep="\n")
 
     def print_config_content(self, config_name) -> None:
         """
