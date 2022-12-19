@@ -50,7 +50,9 @@ class MoveConfigsHandler:
         :return: A list of all the configurations in the configurations directory
         """
         if verbose:
-            return [os.path.join(self.CONFIGS_DIR, f) for f in os.listdir(self.CONFIGS_DIR)]
+            return [
+                os.path.join(self.CONFIGS_DIR, f) for f in os.listdir(self.CONFIGS_DIR)
+            ]
         return [c.replace(".json", "") for c in os.listdir(self.CONFIGS_DIR)]
 
     def print_configs(self, verbose: bool = False) -> None:

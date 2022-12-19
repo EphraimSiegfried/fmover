@@ -46,7 +46,7 @@ Some examples of what the program will do with the configuration above:
 * If a file was downloaded from www.uni.com and the file name contains the word "Analysis", the file will be moved to the folder "/Users/user/Documents/Uni".
 * If a file extension is ".pdf", the file will be moved to the folder "/Users/user/Documents/PDF".
 
-Further information on the configuration is given in the section [The Configuration](# The Configuration).
+Further information on the configuration is given in the section [The Configuration](#The configuration).
 
 
 ## Getting Started
@@ -76,47 +76,52 @@ You will have a default configuration file once you install the program.
 
 To list all available configurations, run:
 ```shell
-fmover -l
+fmover list
 ```
 
-To print the content of a configuration file (in this example the default configuration), run:
+To print the content of a configuration file, run:
 ```shell
-fmover -p default
+fmover print your_config_name
 ```
 
 To create a new configuration file, run:
 ```shell
-fmover -n new_config
+fmover create new_config
 ```
 To open and eventually edit a configuration file in your default text editor, run:
 ```shell
-fmover -o new_config
+fmover open your_config_name
 ```
 
 To delete a configuration file, run:
 ```shell
-fmover -d new_config
+fmover delete your_config_name
 ```
 
 #### Moving files
-To move one file based on the configuration (in this example the default configuration), run:
+To move one file based on the configuration, run:
 ```shell
-fmover -m /path/to/file default 
+fmover move /path/to/file your_config_name
 ```
 
-To move all files in a directory based on the configuration (in this example the default configuration), run:
+To move all files in a directory based on the configuration, run:
 ```shell
-fmover -a /path/to/directory default 
+fmover move-all /path/to/directory your_config_name
 ```
 
-To move files without a pop-up notification, run:
+To get a pop-up notification when files are moved, run:
 ```shell
-fmover -a /path/to/directory default -s
+fmover move-all /path/to/directory your_config_name --notify
 ```
 
 To create destination folders if they do not exist, run:
 ```shell
-fmover -a /path/to/directory default -f
+fmover move-all /path/to/directory your_config_name --force
+```
+
+To only get the information where the files would be moved without actually moving them, run:
+```shell
+fmover move-all /path/to/directory your_config_name --dry-run
 ```
 
 ### The configuration
@@ -227,7 +232,7 @@ To do this, follow these steps:
 6. At the "Shell" field, select "pass input as arguments".
 7. Paste the following code into your terminal and copy the output:
 ```shell
-echo "for f in"' "$@"' "\ndo\n    $(which fmover) -m"' "$f" default'"\ndone"
+echo "for f in"' "$@"' "\ndo\n    $(which fmover) move"' "$f" default'"\ndone"
 ```
 8. Paste the output into the "Shell" field.
 9. Replace "default" with the name of your configuration.

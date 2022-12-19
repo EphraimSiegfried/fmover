@@ -48,7 +48,13 @@ class Mover:
         notification.message = new_location
         notification.send()
 
-    def move_file(self, file_path: str, should_notify: bool = False, force: bool = False, dry_run: bool = False) -> None:
+    def move_file(
+        self,
+        file_path: str,
+        should_notify: bool = False,
+        force: bool = False,
+        dry_run: bool = False,
+    ) -> None:
         """
         Moves a file to a new location based on the configuration file
         :param force: If true, the destination directory will be created if it does not exist
@@ -86,12 +92,14 @@ class Mover:
         if should_notify:
             self._notify(f_name, new_file_path)
         logger.info(f"Moved: {relpath(new_file_path, file_path)}")
-        logger.debug(
-            f"Moved: {normpath(file_path)} -> {new_file_path}"
-        )
+        logger.debug(f"Moved: {normpath(file_path)} -> {new_file_path}")
 
     def move_files_in_dir(
-            self, path_to_directory: str, should_notify: bool = False, force: bool = False, dry_run: bool = False
+        self,
+        path_to_directory: str,
+        should_notify: bool = False,
+        force: bool = False,
+        dry_run: bool = False,
     ) -> None:
         """
         Moves all files in a directory to a new location based on the configuration file

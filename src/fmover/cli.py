@@ -51,7 +51,12 @@ def main(argv: Optional[Sequence[str]] = None) -> None:
 
     # List all configuration names
     list_parser = subparsers.add_parser("list", help="List all configurations")
-    list_parser.add_argument("-v", "--verbose", action="store_true", help="Print the full path to the configuration files")
+    list_parser.add_argument(
+        "-v",
+        "--verbose",
+        action="store_true",
+        help="Print the full path to the configuration files",
+    )
 
     # Create a configuration
     create_config_parser = subparsers.add_parser(
@@ -173,11 +178,19 @@ def main(argv: Optional[Sequence[str]] = None) -> None:
         configs_handler.print_config_content(args.config_name)
     elif args.command == "move":
         mover = Mover(configs_handler.get_config_path(args.config_name))
-        mover.move_file(args.file_path, should_notify=args.notify, force=args.force, dry_run=args.dry_run)
+        mover.move_file(
+            args.file_path,
+            should_notify=args.notify,
+            force=args.force,
+            dry_run=args.dry_run,
+        )
     elif args.command == "move-all":
         mover = Mover(configs_handler.get_config_path(args.config_name))
         mover.move_files_in_dir(
-            args.dir_path, should_notify=args.notify, force=args.force, dry_run=args.dry_run
+            args.dir_path,
+            should_notify=args.notify,
+            force=args.force,
+            dry_run=args.dry_run,
         )
 
 
