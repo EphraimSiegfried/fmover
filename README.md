@@ -18,41 +18,7 @@
 </div>
 
 ## Description
-Tired of moving files manually? Given a file path and a configuration, fmover will move files based on the specified criteria.
-
-The program can currently move files based on the properties: file source, file extension and file name. 
-These properties are specified in the configuration which is a json file.
-
-An example configuration looks like this:
-```json
-  {
-  "COMMAND": [
-    {"NAME(Analysis) & WHERE_FROM(www.uni.com)": "WHERE_FROM(www.uni.com)"}, 
-    {"WHERE_FROM(*)": "WHERE_FROM(*)"}
-  ],
-  "WHERE_FROM": {
-    "www.uni.com": "/Users/user/Documents/Uni",
-    "www.uni2.com": "/Users/user/Documents/Uni2"
-  },
-  "NAME": {
-    "Analysis": "/Users/user/Documents/Uni/Analysis"
-  },
-  "FILE_EXTENSION": {
-    ".pdf": "/Users/user/Documents/PDF",
-    ".docx": "/Users/user/Documents/DOCX",
-    ".pptx": "/Users/user/Documents/PPTX"
-  }
-}
-
-```
-The command section specifies which properties and respective patterns should be considered and where to move a file if that file has those properties. (e.g. the first command in natural language would be: "If a file has the name Analysis and was obtained from www.uni.com, move it to /Users/user/Documents/Uni").
-The remaining sections specify which properties and patterns to consider.
-
-Some examples of what the program will do with the configuration above:
-* If a file was downloaded from www.uni.com and the file name contains the word "Analysis", the file will be moved to the folder "/Users/user/Documents/Uni".
-* If a file extension is ".pdf", the file will be moved to the folder "/Users/user/Documents/PDF".
-
-Further information on the configuration is given in the section [The Configuration](#The configuration).
+fmover is an open source file management command line interface that makes it easy to automatically move files based on their properties and specific criteria. With fmover, you can move files based on their source, extension, and name by specifying these properties in a configuration file. This allows you to quickly and easily organize your files without having to manually move them yourself. Plus, fmover is compatible with Python 3.6 and higher and is available on PyPi for easy installation. With a simple configuration file, you can easily specify where to move your files and fmover will do the rest. Streamline your file organization and save time with fmover.
 
 
 ## Getting Started
@@ -131,101 +97,44 @@ fmover move-all /path/to/directory your_config_name --dry-run
 ```
 
 ### The configuration
-The configuration defines what properties to consider and how to move files based on those properties. 
-There are Commands and Properties. Commands specify which properties to consider and where to move a file if it has those properties.
-A property specifies which patterns to consider and where to move a file if it has those patterns.
+fmover uses a JSON configuration file to specify which file properties and patterns should be used to trigger file movements. The file is divided into four sections: COMMAND, WHERE_FROM, NAME, and FILE_EXTENSION.
 
-#### Commands
-* The configuration must have the outer key "COMMAND" with a value which is a list of singleton dictionaries. 
-These singleton dictionaries are commands which consist of antecedents (as keys) and consequents (as values).
-* An antecedent consist of tokens which are seperated by "&". A consequent only has one token.
-* Tokens consist of a parameter and a pattern. The tokens have the following form: "PARAMETER(PATTERN)".
-The parameter can be one of the following: "NAME", "FILE_EXTENSION", "WHERE_FROM".
-The pattern can be a string or a wildcard "*". A wildcard matches any pattern in the respective property.
-* If the parameter is declared in the command it must be a property in the config.
+Here is an example configuration file:
 
-This is an example of a valid command section:
 ```json
-  {
+{
   "COMMAND": [
-    {
-      "NAME(Tests) & FILE_EXTENSION(.pdf) & WHERE_FROM(www.uni.com": "NAME(Tests)"
-    },
-    {
-      "WHERE_FROM(*)": "WHERE_FROM(*)"
-    }
-  ]
-  }
-```
-
-#### Properties
-* The configuration can have (it's optional) the outer keys "NAME", "FILE_EXTENSION" and "WHERE_FROM" with values which are dictionaries.
-* The keys of these dictionaries are patterns and the values are paths.
-
-This is an example of a valid property section:
-```json
-  {
-  "NAME": {
-    "Tests": "/Users/user/Documents/Tests",
-    "Analysis": "/Users/user/Documents/Analysis"
-  },
-  "FILE_EXTENSION": {
-    ".pdf": "/Users/user/Documents/PDF",
-    ".docx": "/Users/user/Documents/DOCX",
-    ".pptx": "/Users/user/Documents/PPTX"
-  },
-  "WHERE_FROM": {
-    "www.uni.com": "/Users/user/Documents/Uni",
-    "www.uni2.com": "/Users/user/Documents/Uni2"
-  }
-}
-```
-#### Example Behavior
-Let us merge these two sections to get a full configuration:
-```json
-  {
-  "COMMAND": [
-    {
-      "NAME(Tests) & FILE_EXTENSION(.pdf) & WHERE_FROM(www.uni.com": "NAME(Tests)"
-    },
-    {
-      "WHERE_FROM(*)": "WHERE_FROM(*)"
-    }
+    {"NAME(Analysis) & WHERE_FROM(www.uni.com)": "WHERE_FROM(www.uni.com)"}, 
+    {"FILE_EXTENSION(*)": "FILE_EXTENSION(*)"}
   ],
+  "WHERE_FROM": {
+    "www.uni.com": "/Users/user/Documents/Uni",
+    "www.uni2.com": "/Users/user/Documents/Uni2"
+  },
   "NAME": {
-    "Tests": "/Users/user/Documents/Tests",
-    "Analysis": "/Users/user/Documents/Analysis"
+    "Analysis": "/Users/user/Documents/Uni/Analysis"
   },
   "FILE_EXTENSION": {
     ".pdf": "/Users/user/Documents/PDF",
     ".docx": "/Users/user/Documents/DOCX",
     ".pptx": "/Users/user/Documents/PPTX"
-  },
-  "WHERE_FROM": {
-    "www.uni.com": "/Users/user/Documents/Uni",
-    "www.uni2.com": "/Users/user/Documents/Uni2"
   }
 }
 ```
-Now let us consider the following file:
-* The file name is "Tests_Algebra".
-* The file extension is ".pdf".
-* The file was downloaded from "www.uni.com".
+#### COMMAND
+This section specifies the conditions that must be met in order for a file to be moved. The format is a list of dictionaries, with each dictionary representing a command. Each command consists of an antecedent (left side of the command) and a consequent (right side of the command).
 
-In the antecedent of the first command, all tokens are satisfied.
-Therefore, the consequent of the first command is executed. 
-The consequent is "NAME(Tests)". This means that the file will be moved to the value of the key "Tests" in the property "NAME".
-In this case, the file will be moved to "/Users/user/Documents/Tests".
+The antecedent is a combination of tokens, separated by conjunction (&). Each token is a file property and pattern, formatted as PROPERTY(PATTERN). If a file property matches the specified pattern, the token is considered true.
 
-Now let us consider the following file:
-* The file name is "Test".
-* The file extension is ".pdf".
-* The file was downloaded from "www.uni.com".
+The consequent is a file property and pattern, formatted as PROPERTY(PATTERN). If the antecedent is true, the file will be moved to the destination specified by the consequent.
 
-In the antecedent of the first command, the first token is not satisfied, because "Test" does not contain "Tests".
-Therefore, the consequent of the first command is not executed.
-The antecedent of the second command is satisfied, because there exists a pattern in the property "WHERE_FROM" which matches with where the file was obtained from.
-Therefore, the consequent of the second command is executed and the file will be moved to the value of the pattern "www.uni.com" in the property "WHERE_FROM", which is "/Users/user/Documents/Uni".
+#### WHERE_FROM, NAME, and FILE_EXTENSION
+
+These sections specify the file properties and patterns that can be used in the COMMAND section. Each section is a dictionary, with the keys being the patterns and the values being the destinations for the files. If a file property matches the specified pattern, it will be moved to the corresponding destination.
+
+#### Example
+In the above configuration, the first command states that if a file has the name "Analysis" and was obtained from "www.uni.com", it should be moved to the folder "/Users/user/Documents/Uni". The second command states that if a file has any extension defined in FILE_EXTENSION, it should be moved to the corresponding destination specified in the FILE_EXTENSION section (e.g. a pptx file would be moved to /Users/user/Documents/PPTX).
+
 
 ## Automator Folder Action on macOS
 On macOs, you can combine the program with the Automator Folder Action to automatically move files to the correct folder when they are downloaded.
