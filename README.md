@@ -177,3 +177,23 @@ This project is licensed under the MIT License - see the LICENSE.md file for det
 Inspiration, code snippets, etc.
 * [filejuggler](https://www.filejuggler.com/features/move-and-copy-files-automatically/)
 * [notify-py](https://github.com/ms7m/notify-py)
+
+## Contribute
+
+Contibutions are welcome! If you want to contribute, please follow these steps:
+
+- Fork the repository and clone it to your local machine.
+- Install [Poetry](https://python-poetry.org/)
+  - `pipx install poetry`
+- Install dependencies
+  - `poetry install`
+- Create a new branch for your changes.
+- Add patches/new features/bug fixes
+- Run tests, lints and black formatting
+  - `poetry run pytest tests/*`
+  - `poetry run pylint --errors-only src/fmover/`
+  - `poetry run black src/fmover/`
+- Commit your changes and push them to your fork.
+- Create a pull request from your fork to the main repository.
+
+Thank you for considering contributing to fmover!
