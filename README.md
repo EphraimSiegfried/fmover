@@ -6,6 +6,12 @@
 </i>
   <br>
   <br>
+  <p align="center">
+    <img src="https://github.com/EphraimSiegfried/fmover/actions/workflows/tests.yml/badge.svg">
+    <img src="https://img.shields.io/badge/Available-on%20PyPi-blue?logoColor=white&logo=Python">
+    <img src="https://img.shields.io/badge/Python-3.6%2B-blue?logo=python">
+    <img src="https://img.shields.io/badge/Formatting-Black-black.svg">
+  </p>
     <p align="center">
       <img src="https://user-images.githubusercontent.com/114060741/204161513-aaa94afc-9ed0-48ef-9ce1-053d0d6eab8d.gif" alt="A demo of fmover moving files in a directory">
   </p>
